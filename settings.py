@@ -7,10 +7,15 @@ FPS = 30
 
 TITLE = "SIllY old GamE"
 
+PLAYER_SPEED = 300
+
 TILESIZE = 32
+
+
+#silly colors 
 GREEN = (0,255,0)
 BLUE = (0,0,254)
 LIGHTGREY = (75,75,75)
 BGCOLOR = (0,0,0)
-
-PLAYER_SPEED = 300
+YELLOW = (50,100,230)
+WHITE = (0,0,0)

@@ -37,8 +37,11 @@ class Game:
     def new(self):
 
         print("create new game...")
+        self.pov = pg.sprite.Group()
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.PowerUp = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -50,9 +53,12 @@ class Game:
                     print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
-                    self.Pov = Pov(self, col, row)
-
-       
+                    self.pov = Pov(self, col, row)
+                #I strongly dislike the next 2 lines
+                if tile == 'C':
+                    Coins(self, col, row)
+                if tile == 'p':
+                    PowerUp(self, col, row)
    
     #making it so the game can close when requested
     
@@ -65,21 +71,26 @@ class Game:
     def update(self):
          self.all_sprites.update()
    
-    def draw(self):
-       self.draw
-#this ^^^^^^^^^^^^^^^^^^^  defines the game that is launching ^^^^^^^
     def draw_grid(self):
-        #defining look on x and y
-        for x in range (0,WIDTH,TILESIZE):
-            pg.draw.line(self.screen,LIGHTGREY,(x,0), (x,HEIGHT))
-        for y in range (0,HEIGHT, TILESIZE):
-            pg.draw.line(self.screen,LIGHTGREY,(0,y), (WIDTH,y))
+         for x in range(0, WIDTH, TILESIZE):
+              pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+         for y in range(0, HEIGHT, TILESIZE):
+              pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+    
+    def draw_text(self, surface, text, size, color, x, y):
+        font_name = pg.font.match_font('Time New Rome')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = (x,y)
+        surface.blit(text_surface, text_rect)
+    
     def draw(self):
-         #drawing screen stuf
-         self.screen.fill(BGCOLOR)
-         self.draw_grid()
-         self.all_sprites.draw(self.screen)
-         pg.display.flip()
+            self.screen.fill(BGCOLOR)
+            self.draw_grid()
+            self.all_sprites.draw(self.screen)
+            self.draw_text(self.screen, "Coins " + str(self.pov.moneybag), 24, WHITE, WIDTH/2 - 32, 2)
+            pg.display.flip()
 #some more events instead of event                              commented out this
     def events(self):
         for event in pg.event.get():

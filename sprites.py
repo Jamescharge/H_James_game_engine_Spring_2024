@@ -14,6 +14,7 @@ class Pov(pg.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
+        self.moneybag = 0
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -44,7 +45,6 @@ class Pov(pg.sprite.Sprite):
     #         if wall.x == self.x + dx and wall.y == self.y + dy:
     #             return True
     #     return False
-            
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
@@ -63,7 +63,14 @@ class Pov(pg.sprite.Sprite):
                 if self.vy < 0:
                     self.y = hits[0].rect.bottom
                 self.vy = 0
-                self.rect.y = self.y
+                self.rect.y = self.y          
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.moneybag += 1
+            if str(hits[0].__class__.__name__) == "Coin":
+                print("you just got powerd yippie")
 
 
     def update(self):
@@ -76,8 +83,67 @@ class Pov(pg.sprite.Sprite):
         self.rect.y = self.y
         # add collision later
         self.collide_with_walls('y')
+        self.collide_with_group(self.game.coins, True)
+          
+        # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
+        # if coin_hits:
+        #     print("I got a coin")
 
+
+
+
+
+class Coins(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites
+        self.groups = game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+class PowerUp(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites
+        self.groups = game.PowerUp
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(LIGHTGREY)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE        
+
+
+
+
+
+
+# class Powerup(pg.sprite.Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_sprites, game.teleport
+#         pg.sprite.Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(LIGHTGREY)
+#         self.rect = self.image.get_rect()
+#         self.x = x
+#         self.y = y
+#         self.rect.x = x * TILESIZE
+#         self.rect.y = y * TILESIZE
     
+    #def collet_power_up()
+        
+
+
+
+    # def move(self, dx=0, dy=0):
 #another class difined mainly by how Cozart went by
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
