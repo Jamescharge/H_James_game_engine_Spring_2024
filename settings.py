@@ -10,7 +10,7 @@ TITLE = "SIllY old GamE"
 
 
 TILESIZE = 32
-PLAYER_SPEED = 300
+
 
 #silly colors 
 GREEN = (0,255,0)
