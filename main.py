@@ -1,5 +1,5 @@
 #The creator of this file is: James H
-#
+#2/28 is when github has started always watching
 #imported in items of python located here
 import pygame as pg
 from random import randint
@@ -41,7 +41,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
-        self.PowerUp = pg.sprite.Group()
+        self.power_ups = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -70,26 +70,25 @@ class Game:
    #not defining sprites all I think
     def update(self):
          self.all_sprites.update()
-   
+  
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
          for y in range(0, HEIGHT, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
-    
     def draw_text(self, surface, text, size, color, x, y):
-        font_name = pg.font.match_font('Time New Rome')
+        font_name = pg.font.match_font('Time New Roman')
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x,y)
-        surface.blit(text_surface, text_rect)
-    
+        surface.blit(text_surface, text_rect)  
     def draw(self):
             self.screen.fill(BGCOLOR)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
-            self.draw_text(self.screen, "Coins " + str(self.pov.moneybag), 24, WHITE, WIDTH/2 - 32, 2)
+            #at 0 until I work it out                                         base 24 ^
+            self.draw_text(self.screen, "Coin Amount " + str(self.pov.moneybag), 24, WHITE, WIDTH/5 - 32, 2)
             pg.display.flip()
 #some more events instead of event                              commented out this
     def events(self):
