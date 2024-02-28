@@ -14,8 +14,9 @@ class Pov(pg.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.moneybag = 0.69
+        self.moneybag = 0
         self.speed = 300
+        self.hitpoints = 3
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -78,7 +79,7 @@ class Pov(pg.sprite.Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         for hit in hits:
             if isinstance(hit, Coins):
-                self.moneybag += 1
+                self.moneybag += 0.69
             elif isinstance(hit, PowerUp):
                 self.speed += 200
                 print("silly")
