@@ -42,6 +42,7 @@ class Game:
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
+        self.kill_wall = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -54,11 +55,16 @@ class Game:
                     Wall(self, col, row)
                 if tile == 'P':
                     self.pov = Pov(self, col, row)
+                    self.Prow = row
+                    self.Pcol = col
                 #I strongly dislike the next 2 lines
                 if tile == 'C':
                     Coins(self, col, row)
-                if tile == 'p':
+                if tile == 'S ':
                     PowerUp(self, col, row)
+                if tile == '2':
+                    print("a kill wall at", row, col)
+                    KillWall(self, col, row)
    
     #making it so the game can close when requested
     
@@ -67,10 +73,11 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
+
    #not defining sprites all I think
     def update(self):
          self.all_sprites.update()
-  
+
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
@@ -83,13 +90,16 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x,y)
         surface.blit(text_surface, text_rect)  
+
     def draw(self):
             self.screen.fill(BGCOLOR)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
-            #at 0 until I work it out                                         base 24 ^
-            self.draw_text(self.screen, "Coin Amount " + str(self.pov.moneybag), 24, WHITE, WIDTH/5 - 32, 2)
+            #at 0 until I work it out                                         base 24 ^    this was 2
+            self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, WIDTH/2 - 32, 2)
             pg.display.flip()
+            # self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, WIDTH/2 - 32, 2)
+
 #some more events instead of event                              commented out this
     def events(self):
         for event in pg.event.get():

@@ -66,6 +66,27 @@ class Pov(pg.sprite.Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y          
+    # def kill_collide_with_walls(self, dir):   
+    #     if dir == 'x':
+    #         hits = pg.sprite.spritecollide(self, self.game.kill_wall, False)
+    #         if hits:
+    #             if self.vx > 0:
+    #                 self.x = hits[0].rect.left - self.rect.width
+    #             if self.vx < 0:
+    #                 self.x = hits[0].rect.right
+    #             self.vx = 0
+    #             self.rect.x = self.x
+    #     if dir == 'y':
+    #         hits = pg.sprite.spritecollide(self, self.game.kill_wall, False)
+    #         if hits:
+    #             if self.vy > 0:
+    #                 self.y = hits[0].rect.top - self.rect.height
+    #             if self.vy < 0:
+    #                 self.y = hits[0].rect.bottom
+    #             self.vy = 0
+    #             self.rect.y = self.y         
+                
+                
     # def collide_with_group(self, group, kill):
     #     hits = pg.sprite.spritecollide(self, group, kill)
     #     if hits:
@@ -83,6 +104,11 @@ class Pov(pg.sprite.Sprite):
             elif isinstance(hit, PowerUp):
                 self.speed += 200
                 print("silly")
+            elif isinstance(hit, KillWall):
+                
+                print("silly")
+                self.kill()
+
 
     def update(self):
         self.get_keys()
@@ -96,11 +122,18 @@ class Pov(pg.sprite.Sprite):
         self.collide_with_walls('y')
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
+        self.collide_with_group(self.game.kill_wall, False)
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
         #     print("I got a coin")
+    def kill(self):
+        self.x = self.game.Pcol*TILESIZE
+        self.y = self.game.Prow*TILESIZE
+        self.health -= 1
+        if self.health == 0:
+            pg.quit()
 
-
+        
 
 
 
@@ -163,6 +196,19 @@ class Wall(pg.sprite.Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        
+class KillWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.kill_wall
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
