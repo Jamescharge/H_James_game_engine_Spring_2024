@@ -187,12 +187,34 @@ class KillWall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+class MobWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.nosee_wall
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # This makes transparancy
+        self.image = pg.Surface((TILESIZE, TILESIZE), pg.SRCALPHA)
+        # should invisible it 
+        self.image.fill((0, 0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 #the following Mob code is made by Chris Cozort my wonderful computer science teacher
 #will use at furture date
-class ShootAbleWeapon (pg.sprite.Sprite):
-    def __init__ (self, game):
-        self.groups = game.all_sprite, game.gun
-
+# class ShootAbleWeapon (pg.sprite.Sprite):
+#     def __init__ (self, game,x,y):
+#         self.groups = game.all_sprite, game.gun
+#         pg.sprite.Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(BLACK)
+#         self.rect = self.image.get_rect()
+#         self.x = x
+#         self.y = y
+#         self.rect.x = x * self.pov
+#         self.rect.y = y * self.pov
 
 class Coins(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -245,7 +267,7 @@ class Mob(pg.sprite.Sprite):
         self.vx, self.vy = 100, 100
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speed = 1
+        self.speed = 1 
     def collide_with_walls(self, dir):
         if dir == 'x':
             # print('colliding on the x')
@@ -255,6 +277,10 @@ class Mob(pg.sprite.Sprite):
                 self.rect.x = self.x
             hits2 = pg.sprite.spritecollide(self,self.game.kill_wall, False)
             if hits2:
+                self.vx *= -1
+                self.rect.x = self.x
+            hits3 = pg.sprite.spritecollide(self,self.game.nosee_wall, False)
+            if hits3:
                 self.vx *= -1
                 self.rect.x = self.x
         if dir == 'y':
@@ -268,6 +294,11 @@ class Mob(pg.sprite.Sprite):
             if hits2:
                 self.vy *= -1
                 self.rect.y = self.y
+            hits3 = pg.sprite.spritecollide(self,self.game.nosee_wall, False)
+            if hits3:
+                self.vy *= -1
+                self.rect.y = self.y
+            
 
     def update(self):
         # self.rect.x += 1

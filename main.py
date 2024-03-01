@@ -66,6 +66,7 @@ class Game:
         self.speed = pg.sprite.Group()
         self.kill_wall = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
+        self.nosee_wall = pg.sprite.Group()
         
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -93,6 +94,9 @@ class Game:
                     Mob(self, col, row)
                 if tile == 'H':
                     HealUp(self, col, row)
+                if tile == '3':
+                    print("shhhhhhhh", row, col)
+                    MobWall(self, col, row)
     #making it so the game can close when requested
     
 
