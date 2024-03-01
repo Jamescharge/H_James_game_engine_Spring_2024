@@ -66,6 +66,7 @@ class Game:
         self.speed = pg.sprite.Group()
         self.kill_wall = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
+        
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
