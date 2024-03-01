@@ -9,6 +9,32 @@ import sys
 from os import path
 from sprites import Pov
 
+'''
+personal ideas
+        
+rules: get high score, don't die, do not exit map(yet)
+eatable enimes by a power up
+
+3 things I need to "add":
+kill wall 
+invisible wall
+health power up
+
+3 things I should add again
+sprint 
+randomness
+time 
+
+
+
+more maps
+pick up stuff(difficult)
+gun
+'''
+
+
+
+
 class Game:
    
    #the game engine is here
@@ -132,6 +158,7 @@ class Game:
             self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)
             
             self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, 2, 3)
+            self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 35)
             pg.display.flip()
 
     
