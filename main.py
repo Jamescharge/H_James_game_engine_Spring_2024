@@ -21,6 +21,26 @@ class Game:
         #making the clock self sustaning if it wants to
         self.clock = pg.time.Clock()
         self.load_data()
+        self.pov = None
+    # def start_screen(self):
+    #     running = True
+    #     while running:
+    #         for event in pg.event.get():
+    #             if event.type == pg.QUIT:
+    #                 running = False
+    #                 pg.quit()
+    #                 sys.exit()
+    #             elif event.type == pg.KEYDOWN:
+    #                 if event.key == pg.K_SPACE:
+    #                     running = False 
+
+    #         self.screen.fill(BGCOLOR)
+
+    #         # Draw your start screen elements here
+    #         self.draw_text("Silly Game", 48, WHITE, WIDTH // 2, HEIGHT // 4)
+    #         self.draw_text("Hit space to PLAY THE GAME", 24, WHITE, WIDTH // 2, HEIGHT // 2)
+
+    #         pg.display.flip()
     def load_data(self):
                 #the following code under game_flder until self.map_data was given to us from mr CoZart fully
         game_folder = path.dirname(__file__)
@@ -37,12 +57,15 @@ class Game:
     def new(self):
 
         print("create new game...")
+
         self.pov = pg.sprite.Group()
         self.all_sprites = pg.sprite.Group()
+        self.healup = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
-        self.power_ups = pg.sprite.Group()
+        self.speed = pg.sprite.Group()
         self.kill_wall = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -60,12 +83,15 @@ class Game:
                 #I strongly dislike the next 2 lines
                 if tile == 'C':
                     Coins(self, col, row)
-                if tile == 'S ':
-                    PowerUp(self, col, row)
+                if tile == 'S':
+                    Speed(self, col, row)
                 if tile == '2':
                     print("a kill wall at", row, col)
                     KillWall(self, col, row)
-   
+                if tile == 'M':
+                    Mob(self, col, row)
+                if tile == 'H':
+                    HealUp(self, col, row)
     #making it so the game can close when requested
     
 
@@ -96,10 +122,14 @@ class Game:
             self.draw_grid()
             self.all_sprites.draw(self.screen)
             #at 0 until I work it out                                         base 24 ^    this was 2
-            self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, WIDTH/2 - 32, 2)
-            pg.display.flip()
-            # self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, WIDTH/2 - 32, 2)
 
+
+            self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)
+            
+            self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, 2, 3)
+            pg.display.flip()
+
+    
 #some more events instead of event                              commented out this
     def events(self):
         for event in pg.event.get():
@@ -109,7 +139,7 @@ class Game:
     #             if event.key == pg.K_LEFT:
     #                 self.player1.move(dx=-1)
     #             if event.key == pg.K_RIGHT:
-    #                 self.player1.move(dx=1)
+    #                 self.player1.movssssssse(dx=1)
     #             if event.key == pg.K_UP:
     #                 self.player1.move(dy=-1)
     #             if event.key == pg.K_DOWN:
@@ -121,6 +151,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+
                 #need to run these things
 g = Game()
 # g.show_start_screen()

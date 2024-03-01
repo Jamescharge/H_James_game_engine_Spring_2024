@@ -4,7 +4,7 @@ import pygame as pg
 from settings import *
 class Pov(pg.sprite.Sprite):
     def __init__(self, game, x, y,):
-        self.groups = game.all_sprites, 
+        self.groups = game.all_sprites 
         # init super class
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -15,8 +15,9 @@ class Pov(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.moneybag = 0
-        self.speed = 300
-        self.health = 10
+        self.speed = 400
+        self.health = 3
+        
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -101,13 +102,14 @@ class Pov(pg.sprite.Sprite):
         for hit in hits:
             if isinstance(hit, Coins):
                 self.moneybag += 1
-            elif isinstance(hit, PowerUp):
+            if isinstance(hit, Speed):
                 self.speed += 200
                 print("silly")
-            elif isinstance(hit, KillWall):
-                
+            if isinstance(hit, KillWall):               
                 print("silly")
                 self.kill()
+            if isinstance(hit, HealUp):               
+                self.health += 1
 
 
     def update(self):
@@ -121,7 +123,8 @@ class Pov(pg.sprite.Sprite):
         # add collision later
         self.collide_with_walls('y')
         self.collide_with_group(self.game.coins, True)
-        self.collide_with_group(self.game.power_ups, True)
+        self.collide_with_group(self.game.speed, True)
+        self.collide_with_group(self.game.healup, True)
         self.collide_with_group(self.game.kill_wall, False)
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
@@ -134,39 +137,6 @@ class Pov(pg.sprite.Sprite):
             pg.quit()
 
         
-
-
-
-class Coins(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.coins
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-class PowerUp(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.power_ups
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(LIGHTGREY)
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-
-
-
-
 
 
 # class Powerup(pg.sprite.Sprite):
@@ -214,4 +184,61 @@ class KillWall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-        
+#the following Mob code is made by Chris Cozort my wonderful computer science teacher
+#will use at furture date
+class Mob(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.vx, self.vy = 100, 100
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.speed = 5        
+class ShootAbleWeapon (pg.sprite.Sprite):
+    def __init__ (self, game):
+        self.groups = game.all_sprite, game.gun
+
+
+class Coins(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+#Original Power up
+class Speed(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.speed
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(LIGHTGREY)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+class HealUp(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.healup
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(PINK)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
