@@ -17,7 +17,11 @@ class Pov(pg.sprite.Sprite):
         self.moneybag = 0
         self.speed = 400
         self.health = 3
-        
+        self.cooldownspeed = 0
+        self.invincible = False
+
+    
+ 
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -99,19 +103,25 @@ class Pov(pg.sprite.Sprite):
                                 #   Solution
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
+        invincible  = False
         for hit in hits:
             if isinstance(hit, Coins):
                 self.moneybag += 1
             if isinstance(hit, Speed):
                 self.speed += 200
                 print("silly")
-            if isinstance(hit, KillWall):               
+            if isinstance(hit, KillWall):
                 print("silly")
-                self.kill()
-            if isinstance(hit, HealUp):               
+                if not invincible:
+                    self.kill()
+                invincible = True
+            if isinstance(hit, HealUp):
                 self.health += 1
             if isinstance(hit, Mob):
-                self.kill()
+                if not invincible:
+                    self.kill()
+                invincible = True 
+
 
 
     def update(self):
@@ -129,15 +139,37 @@ class Pov(pg.sprite.Sprite):
         self.collide_with_group(self.game.healup, True)
         self.collide_with_group(self.game.kill_wall, False)
         self.collide_with_group(self.game.mobs, False)
+        if self.health >= 5:
+            self.health = 5
+        
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
         #     print("I got a coin")
+        
+        #cooldowns
+
+
+
+
     def kill(self):
         self.x = self.game.Pcol*TILESIZE
         self.y = self.game.Prow*TILESIZE
-        self.health -= 1
+        if self.invincible == False:
+            self.health -= 1
+        if self.invincible == True:
+            print("2 bird with one death")       
         if self.health == 0:
             pg.quit()
+    
+    
+    def invincible(self):
+        self.invincible = True
+        if self.invincible == True:
+            self.invinciblecount = str(self.test_timer.countdown(3))
+            print("it did the thing")
+            if self.invinciblecount == '0':
+                self.invincible = False
+
 
         
 
@@ -187,6 +219,9 @@ class KillWall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+    # def death_cooldown(self):
+
+
 class MobWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.nosee_wall

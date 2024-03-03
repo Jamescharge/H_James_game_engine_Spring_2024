@@ -8,28 +8,39 @@ from sprites import *
 import sys
 from os import path
 from sprites import Pov
-
+from uttility import *
 '''
 personal ideas
         
 rules: get high score, don't die, do not exit map(yet)
 eatable enimes by a power up
+To do
+Add comments(difficulty: medium)
+
+
+No brainer priotrity
+time (difficuly:hard)
 
 3 things I need to "add":
-kill wall 
-invisible wall
-health power up
+kill wall (difficuly:easy)
+invisible wall (difficuly:easy)
+health power up  (difficuly:easy)
 
-3 things I should add again
-sprint 
-randomness
-time 
+3 things I should add (very real)
+sprint (difficulty:easy)
+randomness(difficulty:medium)
+more maps(difficulty:medium)
+
+menu(stat and pause)(difficulty:medium)
+gambling(very much want when more maps is added)
+pick up stuff(difficulty:hard)
+gun(difficulty:hard)
+proximity spike wall(difficulty:medium)
 
 
 
-more maps
-pick up stuff(difficult)
-gun
+Bugs fixed
+Kill wall now only kills you once
 '''
 
 
@@ -93,6 +104,11 @@ class Game:
         self.kill_wall = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.nosee_wall = pg.sprite.Group()
+        self.test_timer = Cooldown()
+
+        self.test_timer = Cooldown()
+        self.cooldowns = Cooldown()
+        self.cooldowns.set_timer(self.test_timer)
         
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -102,7 +118,7 @@ class Game:
             for col, tile in enumerate(tiles):
                 print(col)
                 if tile == '1':
-                    print("a wall at", row, col)
+                    # print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
                     self.pov = Pov(self, col, row)
@@ -114,7 +130,7 @@ class Game:
                 if tile == 'S':
                     Speed(self, col, row)
                 if tile == '2':
-                    print("a kill wall at", row, col)
+                    # print("a kill wall at", row, col)
                     KillWall(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
@@ -133,13 +149,15 @@ class Game:
 
    #not defining sprites all I think
     def update(self):
-         self.all_sprites.update()
-
+        self.all_sprites.update()
+        self.test_timer.ticking()
+        self.cooldowns.player_cooldown(self.pov)
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
          for y in range(0, HEIGHT, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+    #this was defined by the amazing Mr Cozord
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('Time New Roman')
         font = pg.font.Font(font_name, size)
@@ -155,10 +173,10 @@ class Game:
             #at 0 until I work it out                                         base 24 ^    this was 2
 
 
-            self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)
-            
-            self.draw_text(self.screen, "Health " + str(self.pov.health), 24, WHITE, 2, 3)
+            self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)           
+            self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 35)
+            self.draw_text(self.screen, str(self.test_timer.countdown(60)), 24, WHITE, WIDTH/2 - 32, 2)
             pg.display.flip()
 
     
