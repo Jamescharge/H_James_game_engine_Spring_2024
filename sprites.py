@@ -2,12 +2,14 @@
 # this code was inspired by Zelda and informed by Chris Bradfield (Very cool person)
 import pygame as pg
 from settings import *
+from uttility import Cooldown
 class Pov(pg.sprite.Sprite):
     def __init__(self, game, x, y,):
         self.groups = game.all_sprites , game.pov
         # init super class
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
+        self.cooldownspeed = Cooldown()
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -15,9 +17,9 @@ class Pov(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.moneybag = 0
-        self.speed = 400
+        self.speed = 300
         self.health = 3
-        self.cooldownspeed = 0
+        self.revert_speed = False 
         self.invincible = False
 
     
@@ -41,7 +43,14 @@ class Pov(pg.sprite.Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
-
+    def speed_cooldown(self):
+        print("I was called/loved once")
+        # self.cooldownspeed.countdown(5) 
+        self.cooldownspeedread = self.cooldownspeed.countdown(5)
+        if self.cooldownspeedread == 0 :
+                print("and I was nieve to exspect this to work")
+                self.revert_speed = True  
+                
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -108,16 +117,25 @@ class Pov(pg.sprite.Sprite):
             if isinstance(hit, Coins):
                 self.moneybag += 1
             if isinstance(hit, Speed):
-                self.speed += 200
-                print("silly")
-            if isinstance(hit, KillWall):
+                if self.speed == 300:
+                    self.speed += 200
+                    if self.speed >= 499:
+                        self.speed_cooldown()
+                        if self.revert_speed == True:
+                       
+                            self.speed += -200
+                            self.revert_speed = False
+                if self.speed == 350:
+                    print("add sprint speed thing ability")
+                    pass
+            elif isinstance(hit, KillWall):
                 print("silly")
                 if not invincible:
                     self.kill()
                 invincible = True
-            if isinstance(hit, HealUp):
+            elif isinstance(hit, HealUp):
                 self.health += 1
-            if isinstance(hit, Mob):
+            elif isinstance(hit, Mob):
                 if not invincible:
                     self.kill()
                 invincible = True 
@@ -276,6 +294,7 @@ class Speed(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
 class HealUp(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.healup

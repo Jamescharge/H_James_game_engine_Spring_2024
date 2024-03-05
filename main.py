@@ -105,7 +105,7 @@ class Game:
         self.mobs = pg.sprite.Group()
         self.nosee_wall = pg.sprite.Group()
         self.test_timer = Cooldown()
-
+        self.cooldownspeed = Cooldown()
         self.test_timer = Cooldown()
         self.cooldowns = Cooldown()
         self.cooldowns.set_timer(self.test_timer)
@@ -151,7 +151,8 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.test_timer.ticking()
-        self.cooldowns.player_cooldown(self.pov)
+     
+    
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
