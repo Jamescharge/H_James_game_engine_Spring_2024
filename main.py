@@ -94,7 +94,7 @@ class Game:
     def new(self):
 
         print("create new game...")
-
+        self.cooldown = Timer(self)
         self.pov = pg.sprite.Group()
         self.all_sprites = pg.sprite.Group()
         self.healup = pg.sprite.Group()
@@ -104,11 +104,7 @@ class Game:
         self.kill_wall = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.nosee_wall = pg.sprite.Group()
-        self.test_timer = Cooldown()
-        self.cooldownspeed = Cooldown()
-        self.test_timer = Cooldown()
-        self.cooldowns = Cooldown()
-        self.cooldowns.set_timer(self.test_timer)
+
         
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -150,8 +146,8 @@ class Game:
    #not defining sprites all I think
     def update(self):
         self.all_sprites.update()
-        self.test_timer.ticking()
-     
+ 
+        self.cooldown.ticking()
     
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -177,7 +173,7 @@ class Game:
             self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 35)
-            self.draw_text(self.screen, str(self.test_timer.countdown(60)), 24, WHITE, WIDTH/2 - 32, 2)
+            # self.draw_text(self.screen, str(self.test_timer.countdown(60)), 24, WHITE, WIDTH/2 - 32, 2)
             pg.display.flip()
 
     
@@ -204,8 +200,30 @@ class Game:
             self.draw()
 
                 #need to run these things
+            
+#this is mr cozort start screen
+    def show_start_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
+        self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
+        pg.display.flip()
+        self.wait_for_key()
+        
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit = False
+                if event.type == pg.KEYUP:
+                    waiting = False
+
+
 g = Game()
 # g.show_start_screen()
+g.show_start_screen()
 while True:
     g.new()
     g.run()

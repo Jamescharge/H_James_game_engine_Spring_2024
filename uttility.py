@@ -1,28 +1,32 @@
-# utility.py
+# this 'cooldown' class is designed to help us control time
+
 import pygame as pg
+import sprites as Pov
 from math import floor
 
-class Cooldown():
-    def __init__(self):
-        self.current_time = 20
+class Timer():
+    # sets all properties to zero when instantiated...
+    def __init__(self, game):
+        self.game = game
+        self.current_time = 0
         self.event_time = 0
-        self.delta = 0
-        self.test_timer = None
-
+        self.cd = 0
+        # ticking ensures the timer is counting...
+    # must use ticking to count up or down
     def ticking(self):
-        self.current_time = floor((pg.time.get_ticks()) / 1000)
-        self.delta = self.current_time - self.event_time
-
-    def countdown(self, x):
-        x = x - self.delta
-        if x > 0:
-            return x
-        else:
-            return 0
-
+        self.current_time = floor((pg.time.get_ticks())/1000)
+        if self.cd > 0:
+            self.countdown()
+    # resets event time to zero - cooldown reset
+    def get_countdown(self):
+        return floor(self.cd)
+    def countdown(self):
+        if self.cd > 0:
+            self.cd = self.cd - self.game.dt
+        if self.cd < 0 :
+            self.health += -200
     def event_reset(self):
-        self.event_time = floor((pg.time.get_ticks()) / 1000)
-
-    def set_timer(self, timer_instance):
-        self.test_timer = timer_instance
-    
+        self.event_time = floor((pg.time.get_ticks())/1000)
+    # sets current time
+    def get_current_time(self):
+        self.current_time = floor((pg.time.get_ticks())/1000)
