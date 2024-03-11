@@ -1,7 +1,7 @@
 # this 'cooldown' class is designed to help us control time
 
 import pygame as pg
-import sprites as Pov
+
 from math import floor
 
 class Timer():
@@ -23,10 +23,20 @@ class Timer():
     def countdown(self):
         if self.cd > 0:
             self.cd = self.cd - self.game.dt
-        if self.cd < 0 :
-            self.health += -200
+        if self.invincible == 0:
+            self.invincible = False
+            self.subtracthealthnow
+
     def event_reset(self):
         self.event_time = floor((pg.time.get_ticks())/1000)
     # sets current time
     def get_current_time(self):
         self.current_time = floor((pg.time.get_ticks())/1000)
+    def invincible(self):
+        self.invincible = True
+        self.invincibleread = 0
+        if self.invincible == True:
+            self.countdown() 
+            print("it did the thing")
+            if self.countdown == '0':
+                self.invincible = False

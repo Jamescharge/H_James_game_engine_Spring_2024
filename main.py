@@ -217,7 +217,7 @@ class Game:
                 if event.type == pg.QUIT:
                     waiting = False
                     self.quit = False
-                if event.type == pg.KEYUP:
+                if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
 
 

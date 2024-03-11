@@ -10,7 +10,7 @@ class Pov(pg.sprite.Sprite):
         # init super class
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-    
+
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -22,8 +22,9 @@ class Pov(pg.sprite.Sprite):
         self.health = 3
         self.revert_speed = False 
         self.invincible = False
-      
-        self.cooldownspeedread = 0
+        self.cooling = False
+        cd = self.cooling     
+
 
         
 
@@ -126,8 +127,8 @@ class Pov(pg.sprite.Sprite):
             if isinstance(hit, Speed):
                 if self.speed == 300:
                     self.speed += 200
+                    
                     self.game.cooldown.cd = 5
-
                 if self.speed == 350:
                     print("add sprint speed thing ability")
                     pass
@@ -160,7 +161,7 @@ class Pov(pg.sprite.Sprite):
         self.collide_with_group(self.game.healup, True)
         self.collide_with_group(self.game.kill_wall, False)
         self.collide_with_group(self.game.mobs, False)
-  
+
         if self.health >= 5:
             self.health = 5
         
@@ -182,15 +183,10 @@ class Pov(pg.sprite.Sprite):
             print("2 bird with one death")       
         if self.health == 0:
             pg.quit()
+    def subtracthealthnow(self):
+        self.health += -200
     
-    
-    def invincible(self):
-        self.invincible = True
-        if self.invincible == True:
-            self.invinciblecount = str(self.test_timer.countdown(3))
-            print("it did the thing")
-            if self.invinciblecount == '0':
-                self.invincible = False
+
 
 
         
