@@ -7,7 +7,6 @@ from settings import *
 from sprites import *
 import sys
 from os import path
-from sprites import Pov
 from uttility import *
 '''
 personal ideas
@@ -104,7 +103,7 @@ class Game:
         self.kill_wall = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.nosee_wall = pg.sprite.Group()
-
+        self.sprinting = pg.sprite.Group()
         
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -129,7 +128,9 @@ class Game:
                     # print("a kill wall at", row, col)
                     KillWall(self, col, row)
                 if tile == 'M':
-                    Mob(self, col, row)
+                    Mob2(self, col, row)
+                # if tile == 'M':
+                #     Mob(self, col, row)
                 if tile == 'H':
                     HealUp(self, col, row)
                 if tile == '3':
@@ -146,7 +147,7 @@ class Game:
    #not defining sprites all I think
     def update(self):
         self.all_sprites.update()
- 
+       
         self.cooldown.ticking()
     
     def draw_grid(self):

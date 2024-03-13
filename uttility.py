@@ -25,7 +25,7 @@ class Timer():
             self.cd = self.cd - self.game.dt
         if self.invincible == 0:
             self.invincible = False
-            self.subtracthealthnow
+            self.subtracthealthnow()
 
     def event_reset(self):
         self.event_time = floor((pg.time.get_ticks())/1000)
