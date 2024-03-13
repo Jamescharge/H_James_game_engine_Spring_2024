@@ -68,6 +68,11 @@ class Pov(pg.sprite.Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
+        if keys[pg.K_LSHIFT] or keys[pg.K_RSHIFT]:
+            self.speed = 450
+        if not keys[pg.K_LSHIFT] or keys[pg.K_RSHIFT]:
+            self.speed = 300
+
     # def speed_cooldown(self):
         
     #     # self.cooldownspeed.countdown(5) 
@@ -209,7 +214,8 @@ class Pov(pg.sprite.Sprite):
             pg.quit()
     def subtracthealthnow(self):
         self.health += -200
-    
+
+
 
 
 
@@ -433,6 +439,12 @@ class Mob2(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'x')
         # self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.walls, 'y')
+        
+        collide_with_walls(self, self.game.nosee_wall, 'x')
+        collide_with_walls(self, self.game.nosee_wall, 'y')
+        collide_with_walls(self, self.game.kill_wall, 'x')
+        collide_with_walls(self, self.game.kill_wall, 'y')
         # self.rect.center = self.hit_rect.center
         # if self.health <= 0:
         #     self.kill()
+    

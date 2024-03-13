@@ -40,3 +40,11 @@ class Timer():
             print("it did the thing")
             if self.countdown == '0':
                 self.invincible = False
+    def sprint_time(self):
+        self.sprint_time = True
+      
+        if self.sprint_time == True:
+            self.countdown() 
+            print("it did the thing")
+            if self.countdown == '0':
+                self.sprint_time = False
