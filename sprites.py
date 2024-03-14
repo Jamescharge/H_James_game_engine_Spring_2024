@@ -31,7 +31,7 @@ class Pov(pg.sprite.Sprite):
         # init super class
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-
+        self.keyamount = 0
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
@@ -46,7 +46,7 @@ class Pov(pg.sprite.Sprite):
         self.cooling = False
         cd = self.cooling     
         self.pos = vec(0,0)
-
+     
         
 
     # def move(self, dx=0, dy=0):
@@ -143,6 +143,35 @@ class Pov(pg.sprite.Sprite):
     #             print("you got coined")
     #         if str(hits[0].__class__.__name__) == PowerUp:
     #             self.speed += 200
+    def update(self):
+        self.get_keys()
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        self.rect.x = self.x
+        # add collision later
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        # add collision later
+        self.collide_with_walls('y')
+        self.collide_with_group(self.game.coins, True)
+        self.collide_with_group(self.game.speed, True)
+        self.collide_with_group(self.game.healup, True)
+        self.collide_with_group(self.game.kill_wall, False)
+        self.collide_with_group(self.game.mobs, False)
+      
+        self.collide_with_group(self.game.keywall, False)
+   
+        self.collide_with_group(self.game.keys, True)
+      
+
+        if self.health >= 5:
+            self.health = 5
+        
+        # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
+        # if coin_hits:
+        #     print("I got a coin")
+        
+        #cooldowns
                                 #   Solution
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
@@ -173,26 +202,39 @@ class Pov(pg.sprite.Sprite):
                 if not invincible:
                     self.kill()
                 invincible = True 
+            elif isinstance(hit, Key):
+                self.keyamount += 1    
+                looks_key_wall_group = self.game.lookskeywall
+                if looks_key_wall_group:
+                    looks_key_wall_group.sprites()[0].kill() 
+            elif isinstance(hit, KeyWall):
+                if self.keyamount == 1:
+                    self.keyamount = 0
+                
+    # def update(self):
+    #     self.get_keys()
+    #     self.x += self.vx * self.game.dt
+    #     self.y += self.vy * self.game.dt
+    #     self.rect.x = self.x
+    #     # add collision later
+    #     self.collide_with_walls('x')
+    #     self.rect.y = self.y
+    #     # add collision later
+    #     self.collide_with_walls('y')
+    #     self.collide_with_group(self.game.coins, True)
+    #     self.collide_with_group(self.game.speed, True)
+    #     self.collide_with_group(self.game.healup, True)
+    #     self.collide_with_group(self.game.kill_wall, False)
+    #     self.collide_with_group(self.game.mobs, False)
+    #     if not self.keyamount == 1 :    
+    #         self.collide_with_group(self.game.keywall, False)
+    #     if self.keyamount == 1 :
+    #         self.collide_with_group(self.game.keywall, True)
+    #     self.collide_with_group(self.game.keys, True)
 
 
-    def update(self):
-        self.get_keys()
-        self.x += self.vx * self.game.dt
-        self.y += self.vy * self.game.dt
-        self.rect.x = self.x
-        # add collision later
-        self.collide_with_walls('x')
-        self.rect.y = self.y
-        # add collision later
-        self.collide_with_walls('y')
-        self.collide_with_group(self.game.coins, True)
-        self.collide_with_group(self.game.speed, True)
-        self.collide_with_group(self.game.healup, True)
-        self.collide_with_group(self.game.kill_wall, False)
-        self.collide_with_group(self.game.mobs, False)
-
-        if self.health >= 5:
-            self.health = 5
+    #     if self.health >= 5:
+            # self.health = 5
         
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
@@ -269,6 +311,35 @@ class KillWall(pg.sprite.Sprite):
         self.rect.y = y * TILESIZE
     # def death_cooldown(self):
 
+class KeyWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.keywall, game.lookskeywall
+        
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(PINK)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+    def has_a_key(self,game):
+        if self.keyamount == 1 :
+            self.groups = game.walls
+class LooksKeyWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.lookskeywall , game.walls
+        
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 
 class MobWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -284,7 +355,18 @@ class MobWall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-
+class Key(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.keys
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 #will use at furture date
 # class ShootAbleWeapon (pg.sprite.Sprite):
 #     def __init__ (self, game,x,y):
@@ -439,7 +521,8 @@ class Mob2(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'x')
         # self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.walls, 'y')
-        
+        collide_with_walls(self,self.game.keywall, 'x')
+        collide_with_walls(self,self.game.keywall, 'y')
         collide_with_walls(self, self.game.nosee_wall, 'x')
         collide_with_walls(self, self.game.nosee_wall, 'y')
         collide_with_walls(self, self.game.kill_wall, 'x')

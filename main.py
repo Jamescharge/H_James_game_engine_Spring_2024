@@ -104,7 +104,9 @@ class Game:
         self.mobs = pg.sprite.Group()
         self.nosee_wall = pg.sprite.Group()
         self.sprinting = pg.sprite.Group()
-        
+        self.keys = pg.sprite.Group()
+        self.keywall = pg.sprite.Group()
+        self.lookskeywall = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -133,6 +135,11 @@ class Game:
                 #     Mob(self, col, row)
                 if tile == 'H':
                     HealUp(self, col, row)
+                if tile == 'k':
+                    Key(self, col, row)
+                if tile == 'K':
+                    LooksKeyWall(self, col, row)
+                    KeyWall(self, col, row)
                 if tile == '3':
                     print("shhhhhhhh", row, col)
                     MobWall(self, col, row)
