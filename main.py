@@ -58,6 +58,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
         self.pov = None
+        Pause = False
     # def start_screen(self):
     #     running = True
     #     while running:
@@ -91,7 +92,8 @@ class Game:
                 print(line)
                 self.map_data.append(line)
     def new(self):
-
+    #These define the groups
+        #I need to add to it (almost)everytime I add a feture that needs to be loaded in the game 
         print("create new game...")
         self.cooldown = Timer(self)
         self.pov = pg.sprite.Group()
@@ -110,10 +112,12 @@ class Game:
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
+        
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
                 print(col)
+               #this defines each and every map item in the #map area
                 if tile == '1':
                     # print("a wall at", row, col)
                     Wall(self, col, row)
@@ -121,7 +125,7 @@ class Game:
                     self.pov = Pov(self, col, row)
                     self.Prow = row
                     self.Pcol = col
-                #I strongly dislike the next 2 lines
+               
                 if tile == 'C':
                     Coins(self, col, row)
                 if tile == 'S':
@@ -154,7 +158,7 @@ class Game:
    #not defining sprites all I think
     def update(self):
         self.all_sprites.update()
-       
+        self.ready_to_pause()
         self.cooldown.ticking()
     
     def draw_grid(self):
@@ -227,6 +231,21 @@ class Game:
                     self.quit = False
                 if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
+                    
+    def ready_to_pause(self):
+    
+        # self.clock.tick(FPS)
+        if Pause == False:
+            for event in pg.event.get():
+                if event.type == pg.K_p:
+                    Pause = True
+                    self.show_pause_screen()
+    def show_pause_screen(self):        
+            self.screen.fill(BGCOLOR)
+            self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
+            self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
+            pg.display.flip()
+        
 
 
 g = Game()

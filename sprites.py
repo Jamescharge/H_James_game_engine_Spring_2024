@@ -310,7 +310,10 @@ class KillWall(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
     # def death_cooldown(self):
-
+''''
+This is the first major feture I will show 
+These are keys and key walls because how it works it, There are 2 identical walls one is KeyWall and the other is looks like keywall
+'''
 class KeyWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.keywall, game.lookskeywall
