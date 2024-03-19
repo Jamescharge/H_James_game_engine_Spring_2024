@@ -58,7 +58,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
         self.pov = None
-        Pause = False
+        
     # def start_screen(self):
     #     running = True
     #     while running:
@@ -142,6 +142,7 @@ class Game:
                 if tile == 'k':
                     Key(self, col, row)
                 if tile == 'K':
+                    #defined it twice so 2 walls were placed so that when one wall is killed it looks like noting has changed (kind of)
                     LooksKeyWall(self, col, row)
                     KeyWall(self, col, row)
                 if tile == '3':
@@ -160,13 +161,14 @@ class Game:
         self.all_sprites.update()
         self.ready_to_pause()
         self.cooldown.ticking()
-    
+    #drawing the grey grid on the bored
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
          for y in range(0, HEIGHT, TILESIZE):
               pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
-    #this was defined by the amazing Mr Cozord
+    #this was made by Corzort
+    #this is defining text outline for draw
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('Time New Roman')
         font = pg.font.Font(font_name, size)
@@ -179,15 +181,13 @@ class Game:
             self.screen.fill(BGCOLOR)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
-            #at 0 until I work it out                                         base 24 ^    this was 2
-
-
+            #drwing coins, lives, and Speed
             self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
-            self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 35)
+            self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 31)
             # self.draw_text(self.screen, str(self.test_timer.countdown(60)), 24, WHITE, WIDTH/2 - 32, 2)
             pg.display.flip()
-
+#flip display after everything
     
 #some more events instead of event                              commented out this
     def events(self):
@@ -203,6 +203,7 @@ class Game:
     #                 self.player1.move(dy=-1)
     #             if event.key == pg.K_DOWN:
     #                 self.player1.move(dy=1)
+   #this starts up the game 
     def run(self,):
         self.playing = True
         while self.playing:
@@ -216,11 +217,14 @@ class Game:
 #this is mr cozort start screen
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
+        #might revamp if we move on
         self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
         self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
+        self.draw_text(self.screen,"Left click to begin ", 24, WHITE, 24, 115)
         pg.display.flip()
         self.wait_for_key()
-        
+
+      #when you click the start screen goes  
     def wait_for_key(self):
         waiting = True
         while waiting:
@@ -229,17 +233,20 @@ class Game:
                 if event.type == pg.QUIT:
                     waiting = False
                     self.quit = False
+                #mouse button left click
                 if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
-                    
+        #MY ATEMPT at pause screen
+                    #will revamp if more time            
     def ready_to_pause(self):
-    
-        # self.clock.tick(FPS)
-        if Pause == False:
+        # Pause = False
+        # # self.clock.tick(FPS)
+        # if Pause == False:
             for event in pg.event.get():
                 if event.type == pg.K_p:
                     Pause = True
                     self.show_pause_screen()
+   #same idea
     def show_pause_screen(self):        
             self.screen.fill(BGCOLOR)
             self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
@@ -247,10 +254,11 @@ class Game:
             pg.display.flip()
         
 
-
+#defines game as G
 g = Game()
 # g.show_start_screen()
 g.show_start_screen()
+#runs game fully with new and run
 while True:
     g.new()
     g.run()

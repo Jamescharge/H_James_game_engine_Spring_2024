@@ -4,12 +4,14 @@ import pygame as pg
 from settings import *
 from uttility import *
 from random import choice
+#very inportent to define the player movement
 vec =pg.math.Vector2
-
+#defines the wall colide class better
 def collide_with_walls(sprite, group, dir):
     if dir == 'x':
         hits = pg.sprite.spritecollide(sprite, group, False)
         if hits:
+            #only learned these hits to kill LooksKeyWall
             if hits[0].rect.centerx > sprite.rect.centerx:
                 sprite.pos.x = hits[0].rect.left - sprite.rect.width / 2
             if hits[0].rect.centerx < sprite.rect.centerx:
@@ -38,6 +40,7 @@ class Pov(pg.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
+        #all atributes that the player has
         self.moneybag = 0
         self.speed = 300
         self.health = 3
@@ -57,6 +60,7 @@ class Pov(pg.sprite.Sprite):
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
+        #WASD and Arrow Keys are defined
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.speed 
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
@@ -68,6 +72,7 @@ class Pov(pg.sprite.Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
+       # using a if and not statement is a W on my part making sprint a easy feture to iplemant
         if keys[pg.K_LSHIFT] or keys[pg.K_RSHIFT]:
             self.speed = 450
         if not keys[pg.K_LSHIFT] or keys[pg.K_RSHIFT]:
@@ -95,6 +100,8 @@ class Pov(pg.sprite.Sprite):
     #         if wall.x == self.x + dx and wall.y == self.y + dy:
     #             return True
     #     return False
+   
+   #put this here but defines the same thing and should work with out it technically
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
@@ -143,6 +150,9 @@ class Pov(pg.sprite.Sprite):
     #             print("you got coined")
     #         if str(hits[0].__class__.__name__) == PowerUp:
     #             self.speed += 200
+    
+    
+    #all the rules how the things collide
     def update(self):
         self.get_keys()
         self.x += self.vx * self.game.dt
@@ -153,6 +163,7 @@ class Pov(pg.sprite.Sprite):
         self.rect.y = self.y
         # add collision later
         self.collide_with_walls('y')
+        #true deletes it Fales does not
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.speed, True)
         self.collide_with_group(self.game.healup, True)
@@ -173,20 +184,22 @@ class Pov(pg.sprite.Sprite):
         
         #cooldowns
                                 #   Solution
+    #this activates stuff
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         invincible  = False
         for hit in hits:
             if isinstance(hit, Coins):
                 self.moneybag += 1
-            if isinstance(hit, Speed):
-                if self.speed == 300:
-                    self.speed += 200
+     #do not use speed anymore
+            # if isinstance(hit, Speed):
+            #     if self.speed == 300:
+            #         self.speed += 200
                     
-                    self.game.cooldown.cd = 5
-                if self.speed == 350:
-                    print("add sprint speed thing ability")
-                    pass
+            #         self.game.cooldown.cd = 5
+            #     if self.speed == 350:
+            #         print("add sprint speed thing ability")
+            #         pass
             elif isinstance(hit, KillWall):
                 print("silly")
                 if not invincible:
@@ -206,6 +219,7 @@ class Pov(pg.sprite.Sprite):
                 self.keyamount += 1    
                 looks_key_wall_group = self.game.lookskeywall
                 if looks_key_wall_group:
+                   #the one times I use sprites to kill with the thing(I barly know how it works)
                     looks_key_wall_group.sprites()[0].kill() 
             elif isinstance(hit, KeyWall):
                 if self.keyamount == 1:
@@ -244,7 +258,7 @@ class Pov(pg.sprite.Sprite):
 
 
 
-
+#teleports back to spawn and subtracts health, then crashs game when you lose fully
     def kill(self):
         self.x = self.game.Pcol*TILESIZE
         self.y = self.game.Prow*TILESIZE
@@ -296,7 +310,7 @@ class Wall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-        
+  #kill wall is a silly thing, like a wall but just has differnt collision thing      
 class KillWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.kill_wall
@@ -321,7 +335,7 @@ class KeyWall(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(PINK)
+        self.image.fill(PINK2)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -343,7 +357,7 @@ class LooksKeyWall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-
+#it is invisible so cool research
 class MobWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.nosee_wall
@@ -437,6 +451,7 @@ class Mob(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.speed = 1 
+    # collide with walls for mob 1 which is no longer in use
     def collide_with_walls(self, dir):
         if dir == 'x':
             # print('colliding on the x')
@@ -508,9 +523,9 @@ class Mob2(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.rot = 0
         # added
-        self.speed = 150
+        self.speed = 250
         # self.health = MOB_HEALTH
-
+# update for mob 2
     def update(self):
         self.rot = (self.game.pov.rect.center - self.pos).angle_to(vec(1, 0))
         # self.image = pg.transform.rotate(self.image, self.rot)
@@ -523,6 +538,8 @@ class Mob2(pg.sprite.Sprite):
         # self.hit_rect.centerx = self.pos.x
         collide_with_walls(self, self.game.walls, 'x')
         # self.hit_rect.centery = self.pos.y
+      
+       #amazing collision this time
         collide_with_walls(self, self.game.walls, 'y')
         collide_with_walls(self,self.game.keywall, 'x')
         collide_with_walls(self,self.game.keywall, 'y')
@@ -530,6 +547,8 @@ class Mob2(pg.sprite.Sprite):
         collide_with_walls(self, self.game.nosee_wall, 'y')
         collide_with_walls(self, self.game.kill_wall, 'x')
         collide_with_walls(self, self.game.kill_wall, 'y')
+        # collide_with_walls(self, self.game.mobs, 'x')
+        # collide_with_walls(self, self.game.mobs, 'y')
         # self.rect.center = self.hit_rect.center
         # if self.health <= 0:
         #     self.kill()
