@@ -25,7 +25,7 @@ class Timer():
             self.cd = self.cd - self.game.dt
         if self.invincible == 0:
             self.invincible = False
-            self.subtracthealthnow()
+           
 
     def event_reset(self):
         self.event_time = floor((pg.time.get_ticks())/1000)
@@ -40,6 +40,13 @@ class Timer():
             print("it did the thing")
             if self.countdown == '0':
                 self.invincible = False
+    def game_ending(self):
+        self.gameend = True
+        if self.gameend == True:
+            self.countdown() 
+            print("it did the thing")
+            if self.countdown == '0':
+                pg.quit
     def sprint_time(self):
         self.sprint_time = True
       

@@ -2,31 +2,34 @@
 #2/28 is when github has started always watching
 #imported in items of python located here
 import pygame as pg
-from random import randint
+from tipslist import *
 from settings import *
 from sprites import *
+from random import *
+from random import choice
 import sys
 from os import path
 from uttility import *
+
 '''
 personal ideas
         
 rules: get high score, don't die, do not exit map(yet)
 eatable enimes by a power up
-To do
-Add comments(difficulty: medium)
 
-
-No brainer priotrity
-time (difficuly:hard)
-
-3 things I need to "add":
+Done
+sprint (difficulty:easy)
 kill wall (difficuly:easy)
 invisible wall (difficuly:easy)
 health power up  (difficuly:easy)
+To do
+
+
+Add comments(difficulty: medium)
+
 
 3 things I should add (very real)
-sprint (difficulty:easy)
+
 randomness(difficulty:medium)
 more maps(difficulty:medium)
 
@@ -42,11 +45,74 @@ Bugs fixed
 Kill wall now only kills you once
 '''
 
+LEVEL1 = "level1.txt"
+LEVEL2 = "level2.txt"
+tips = [
+            "There are 69 very helpful and fun tips",
+            "Do not hit the wall twice(I patched it silly)",
+            "I probaly fixed a glitch",  
+            "If you find a glitch report it(or please exsploit it)",
+            "I engourage finding a way to break the game",
+            "1/69 chance of seeing this message",
+            "custimizing messages is boring(this is message :)  )",
+            "I do not have a lot of fetures - 3/25/24",
+            "Inspired by minecraft - in the next game",
+            "sounds are silly(next on the list of things to add)",
+            "This is a no yap zone(have good listennig ears)",
+            "should call this a demo(it is not even out of beta)",
+            "These texts arn't meta, they are factural",
+            "You got this (maybe idk)",
+            "hit w, a or d and s because something might happen",
+            "I should make a mode that just breaks the game oh wait I already did that",
+            "Hold shift to sprint because if you don't, it might be rough world out there",
+            "it would be funny if the mob speed was random",
+            "No message is meta unless it comments on non meta messages",
+            "These won't be boring one day",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+            "I probaly fixed a glitch",
+                ]
 
-
-
+gameover = False
 class Game:
    
+    
    #the game engine is here
     def __init__(self,):
        #using pygame here
@@ -58,7 +124,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
         self.pov = None
-        
+       
     # def start_screen(self):
     #     running = True
     #     while running:
@@ -78,16 +144,24 @@ class Game:
     #         self.draw_text("Hit space to PLAY THE GAME", 24, WHITE, WIDTH // 2, HEIGHT // 2)
 
     #         pg.display.flip()
+ 
+   
+
     def load_data(self):
                 #the following code under game_flder until self.map_data was given to us from mr CoZart fully
         game_folder = path.dirname(__file__)
         self.map_data = []
+        self.on_level = 1
+        if self.on_level == 1 :
+            currentlevel = LEVEL1 
+        if self.on_level == 2:
+            currentlevel = LEVEL2 
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
+        with open(path.join(game_folder, currentlevel), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
@@ -109,6 +183,7 @@ class Game:
         self.keys = pg.sprite.Group()
         self.keywall = pg.sprite.Group()
         self.lookskeywall = pg.sprite.Group()
+        self.next_level_wall = pg.sprite.Group()
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -128,6 +203,8 @@ class Game:
                
                 if tile == 'C':
                     Coins(self, col, row)
+                if tile == '4':
+                    NextLevelWall(self, col, row)
                 if tile == 'S':
                     Speed(self, col, row)
                 if tile == '2':
@@ -155,12 +232,31 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
-
+ 
+   
+    def show_start_screen(self):
+        self.screen.fill(BGCOLOR)
+        #might revamp if we move on
+        r = Random() 
+        selected_tip = r.choice(tips)
+        tip_text = (selected_tip )
+        self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
+        self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
+        self.draw_text(self.screen,"Left click to begin ", 24, WHITE, 24, 115)
+        self.draw_text(self.screen,"Secret Tip: ", 24, WHITE, 24, 270)
+        self.draw_text(self.screen,tip_text, 24, WHITE, 24, 305)
+        pg.display.flip()
+        self.wait_for_key()
+  
    #not defining sprites all I think
     def update(self):
         self.all_sprites.update()
         self.ready_to_pause()
         self.cooldown.ticking()
+        if self.pov.health == 0:
+            waiting = True
+            g.show_start_screen
+    
     #drawing the grey grid on the bored
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -182,7 +278,7 @@ class Game:
             self.draw_grid()
             self.all_sprites.draw(self.screen)
             #drwing coins, lives, and Speed
-            self.draw_text(self.screen, "Coin " + str(self.pov.moneybag), 24, WHITE, 2, 17)           
+            self.draw_text(self.screen, "Coin " + str(self.pov.moneyamount), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 31)
             # self.draw_text(self.screen, str(self.test_timer.countdown(60)), 24, WHITE, WIDTH/2 - 32, 2)
@@ -215,14 +311,7 @@ class Game:
                 #need to run these things
             
 #this is mr cozort start screen
-    def show_start_screen(self):
-        self.screen.fill(BGCOLOR)
-        #might revamp if we move on
-        self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
-        self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
-        self.draw_text(self.screen,"Left click to begin ", 24, WHITE, 24, 115)
-        pg.display.flip()
-        self.wait_for_key()
+
 
       #when you click the start screen goes  
     def wait_for_key(self):
@@ -236,6 +325,8 @@ class Game:
                 #mouse button left click
                 if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
+        
+        
         #MY ATEMPT at pause screen
                     #will revamp if more time            
     def ready_to_pause(self):
@@ -245,14 +336,23 @@ class Game:
             for event in pg.event.get():
                 if event.type == pg.K_p:
                     Pause = True
-                    self.show_pause_screen()
+                 
    #same idea
-    def show_pause_screen(self):        
+
+   
+    def show_gameover_screen(self):        
             self.screen.fill(BGCOLOR)
-            self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
-            self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
+            self.draw_text(self.screen,"Game Over ", 24, WHITE, 24, 35)
+            self.draw_text(self.screen,"You Tried blud ", 24, WHITE, 24, 70)
             pg.display.flip()
-        
+            
+    # def restart(self):
+        # if gameover == True:            
+        #     for event in pg.event.get():
+        #         if event.type == pg.MOUSEBUTTONDOWN:
+                    
+
+
 
 #defines game as G
 g = Game()
@@ -262,6 +362,3 @@ g.show_start_screen()
 while True:
     g.new()
     g.run()
-    
-    #g.show_go_screen()
-    

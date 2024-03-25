@@ -41,7 +41,7 @@ class Pov(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         #all atributes that the player has
-        self.moneybag = 0
+        self.moneyamount = 0
         self.speed = 300
         self.health = 3
         self.revert_speed = False 
@@ -169,7 +169,7 @@ class Pov(pg.sprite.Sprite):
         self.collide_with_group(self.game.healup, True)
         self.collide_with_group(self.game.kill_wall, False)
         self.collide_with_group(self.game.mobs, False)
-      
+        self.collide_with_group(self.game.next_level_wall, False)
         self.collide_with_group(self.game.keywall, False)
    
         self.collide_with_group(self.game.keys, True)
@@ -190,7 +190,7 @@ class Pov(pg.sprite.Sprite):
         invincible  = False
         for hit in hits:
             if isinstance(hit, Coins):
-                self.moneybag += 1
+                self.moneyamount += 1
      #do not use speed anymore
             # if isinstance(hit, Speed):
             #     if self.speed == 300:
@@ -224,6 +224,8 @@ class Pov(pg.sprite.Sprite):
             elif isinstance(hit, KeyWall):
                 if self.keyamount == 1:
                     self.keyamount = 0
+            elif isinstance(hit, NextLevelWall):
+                self.on_level =+ 1
                 
     # def update(self):
     #     self.get_keys()
@@ -266,8 +268,7 @@ class Pov(pg.sprite.Sprite):
             self.health -= 1
         if self.invincible == True:
             print("2 bird with one death")       
-        if self.health == 0:
-            pg.quit()
+
     def subtracthealthnow(self):
         self.health += -200
 
@@ -368,6 +369,21 @@ class MobWall(pg.sprite.Sprite):
         # should invisible it 
         self.image.fill((0, 0, 0, 0))
         self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+class NextLevelWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.next_level_wall
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # This makes transparancy
+        self.image = pg.Surface((TILESIZE, TILESIZE), pg.SRCALPHA)
+        # should invisible it 
+        # self.image.fill((0, 0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.image.fill(WHITE)
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
