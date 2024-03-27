@@ -178,6 +178,9 @@ class Pov(pg.sprite.Sprite):
         if self.health >= 5:
             self.health = 5
         
+        if self.health == 0:
+            waiting = True
+            restarting = True
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
         #     print("I got a coin")

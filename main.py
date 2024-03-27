@@ -68,44 +68,44 @@ tips = [
             "it would be funny if the mob speed was random",
             "No message is meta unless it comments on non meta messages",
             "These won't be boring one day",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
-            "I probaly fixed a glitch",
+            "Is it game devolopment if the only thing you are devoloping is a healthy google search history",
+            "hitting the q button does nothing",
+            "What if ninja got a low taper fade",
+            "who_asked_you're_opinion.png",
+            "I hope anchient historians read this and go ' hey thats me ' ",
+            "no one reads the secret tips and tricks",
+            "I only write these when the schools internet during lunch is down",
+            "Do this instead of hk (hollow knight)",
+            "[insert a refrence to canadians]",
+            "[404 yap session uncalled for]",
+            "1/20 of these have something to do with the game",
+            "press arrow keys instead of wasd to feel special(your not unique)",
+            "why have you not left clicked already",
+            "to lazy to know how to move this to a seperat txt file",
+            "when did you learn the alphabet?",
+            "we all have skill issues every once in a while, yours is just ongoing indeffinitly",
+            "I have 7 reasons to not be silly but the other 412 say other whys",
+            "someone infront of me tried to use burp to load a bot token on discord(they are so silly)",
+            "it would be meta to say 'does anyone read these' but like everyone does that so the meta thing is to point it out",
+            "Aiden Hurlock is Parrotx2's real name",
+            "I am a kindergardener",
+            "all these messages are silly and if you are offended all complaints go to the bin on the left side of the Deans office",
+            "Are you silly, then spell it",
+            " 'I don't even know who you are' this silly guy",
+            "I hate physics",
+            "I do not remeber what I was gonna say",
+            "I have bad memory",
+            "ERB is the best youtube channel",
+            "pain of writing",
+            "[101 did not know anyone care]",
+            "I am glad that someone clicked left click in a bit",
+            "red, orange , puple yellow, blue",
+            "you guys think I am funny right?!",
+            "Robert J chess is silly",
+            "refrencing alt acounts in here",
+            "big silly terificance is just Big T",
+            "would be funnier but some do not allow true creative genius",
+            "I still have bugs",
             "I probaly fixed a glitch",
                 ]
 
@@ -253,9 +253,7 @@ class Game:
         self.all_sprites.update()
         self.ready_to_pause()
         self.cooldown.ticking()
-        if self.pov.health == 0:
-            waiting = True
-            g.show_start_screen
+
     
     #drawing the grey grid on the bored
     def draw_grid(self):
@@ -312,12 +310,18 @@ class Game:
             
 #this is mr cozort start screen
 
-
+    
       #when you click the start screen goes  
     def wait_for_key(self):
         waiting = True
+        restarting = False
         while waiting:
+            
+            print("testing it")
             self.clock.tick(FPS)
+            if restarting == True :
+                g.show_start_screen
+                restarting = False
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     waiting = False
@@ -325,7 +329,7 @@ class Game:
                 #mouse button left click
                 if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
-        
+
         
         #MY ATEMPT at pause screen
                     #will revamp if more time            
@@ -357,6 +361,7 @@ class Game:
 #defines game as G
 g = Game()
 # g.show_start_screen()
+    
 g.show_start_screen()
 #runs game fully with new and run
 while True:
