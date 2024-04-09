@@ -1,5 +1,6 @@
 #This file is another file by James H 
 # this code was inspired by Zelda and informed by Chris Bradfield (Very cool person)
+from typing import Any
 import pygame as pg
 from settings import *
 from uttility import *
@@ -49,7 +50,7 @@ class Pov(pg.sprite.Sprite):
         self.cooling = False
         cd = self.cooling     
         self.pos = vec(0,0)
-     
+        self.povhasakey = 0
         
 
     # def move(self, dx=0, dy=0):
@@ -416,7 +417,40 @@ class Key(pg.sprite.Sprite):
 #         self.y = y
 #         self.rect.x = x * self.pov
 #         self.rect.y = y * self.pov
+class sidetoside(pg.sprite.Sprite):
+    def __init__(self, game, x, y, speed):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.pos = vec(x, y) * TILESIZE
+        self.rect.center = self.pos
+        self.speed = speed
+        self.direction = 1  # Start moving right
 
+    def update(self):
+        # Move horizontally
+        self.pos.x += self.speed * self.direction * self.game.dt
+        self.rect.centerx = self.pos.x
+
+        # Check collision with walls
+        self.collide_with_walls()
+
+        # Change direction if hitting a wall
+        if self.rect.left < 0 or self.rect.right > self.game.map.width * TILESIZE:
+            self.direction *= -1
+
+    def collide_with_walls(self):
+        for wall in self.game.walls:
+            if pg.sprite.collide_rect(self, wall):
+                if self.direction == 1:
+                    self.pos.x = wall.rect.left - self.rect.width / 2
+                elif self.direction == -1:
+                    self.pos.x = wall.rect.right + self.rect.width / 2
+                self.direction *= -1  # Change direction
+                break  # Stop checking for collisions after first collision
 class Coins(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.coins
@@ -507,7 +541,6 @@ class Mob(pg.sprite.Sprite):
         # self.rect.x += 1
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
-        
         if self.rect.x < self.game.pov.rect.x:
             self.vx = 100
         if self.rect.x > self.game.pov.rect.x:

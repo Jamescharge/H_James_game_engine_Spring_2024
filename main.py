@@ -45,6 +45,17 @@ Bugs fixed
 Kill wall now only kills you once
 '''
 
+'''
+5 Elements of fun
+Avoiding enemys
+Collecting coins
+Finding glitchs in the mobs ai
+Reading the Custom messages
+Using sprint to give the feeling of more control
+'''
+
+
+
 LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
 tips = [
@@ -124,7 +135,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
         self.pov = None
-       
+        self.povhasakey = 0
     # def start_screen(self):
     #     running = True
     #     while running:
@@ -216,6 +227,8 @@ class Game:
                 #     Mob(self, col, row)
                 if tile == 'H':
                     HealUp(self, col, row)
+                if tile == 'S':
+                    sidetoside(self, col, row, speed=100)
                 if tile == 'k':
                     Key(self, col, row)
                 if tile == 'K':
@@ -279,6 +292,8 @@ class Game:
             self.draw_text(self.screen, "Coin " + str(self.pov.moneyamount), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 31)
+            if self.povhasakey == 1:
+                self.draw_text(self.screen, "YOU HAVE A KEY " + str(self.pov.speed), 24, WHITE, 20, 31)
             # self.draw_text(self.screen, str(self.test_timer.countdown(60)), 24, WHITE, WIDTH/2 - 32, 2)
             pg.display.flip()
 #flip display after everything
@@ -317,7 +332,7 @@ class Game:
         restarting = False
         while waiting:
             
-            print("testing it")
+            # print("testing it")
             self.clock.tick(FPS)
             if restarting == True :
                 g.show_start_screen
