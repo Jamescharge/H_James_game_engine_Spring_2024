@@ -98,7 +98,7 @@ tips = [
             "I have 7 reasons to not be silly but the other 412 say other whys",
             "someone infront of me tried to use burp to load a bot token on discord(they are so silly)",
             "it would be meta to say 'does anyone read these' but like everyone does that so the meta thing is to point it out",
-            "Aiden Hurlock is Parrotx2's real name",
+            "[Insert Chiper the lead to it here] is Parrotx2's real name",
             "I am a kindergardener",
             "all these messages are silly and if you are offended all complaints go to the bin on the left side of the Deans office",
             "Are you silly, then spell it",

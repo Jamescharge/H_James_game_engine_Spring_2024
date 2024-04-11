@@ -230,7 +230,8 @@ class Pov(pg.sprite.Sprite):
                     self.keyamount = 0
             elif isinstance(hit, NextLevelWall):
                 self.on_level =+ 1
-                
+            elif isinstance(hit,sidetoside):
+                self.kill()
     # def update(self):
     #     self.get_keys()
     #     self.x += self.vx * self.game.dt
@@ -431,17 +432,15 @@ class sidetoside(pg.sprite.Sprite):
         self.direction = 1  # Start moving right
 
     def update(self):
-        # Move horizontally
+        # It moves side to side
         self.pos.x += self.speed * self.direction * self.game.dt
         self.rect.centerx = self.pos.x
 
-        # Check collision with walls
+       
         self.collide_with_walls()
 
-        # Change direction if hitting a wall
-        if self.rect.left < 0 or self.rect.right > self.game.map.width * TILESIZE:
-            self.direction *= -1
-
+        #it starts colliding it stuff
+        
     def collide_with_walls(self):
         for wall in self.game.walls:
             if pg.sprite.collide_rect(self, wall):
