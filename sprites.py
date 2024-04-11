@@ -5,6 +5,25 @@ import pygame as pg
 from settings import *
 from uttility import *
 from random import choice
+from os import path
+
+dir = path.dirname(__file__)
+img_dir = path.join(dir, 'images')
+
+SPRITESHEET = "theBell.png"
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, filename):
+        self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height):
+        # grab an image out of a larger spritesheet
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        # image = pg.transform.scale(image, (width, height))
+        image = pg.transform.scale(image, (width * 1, height * 1))
+        return image
+    
 #very inportent to define the player movement
 vec =pg.math.Vector2
 #defines the wall colide class better
@@ -33,11 +52,13 @@ class Pov(pg.sprite.Sprite):
         self.groups = game.all_sprites , game.pov
         # init super class
         pg.sprite.Sprite.__init__(self, self.groups)
+        self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
         self.game = game
         self.keyamount = 0
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
+        self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32),
+                                self.spritesheet.get_image(32, 0, 32, 32)]
+        self.image = self.standing_frames[0]
+        
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
@@ -51,7 +72,13 @@ class Pov(pg.sprite.Sprite):
         cd = self.cooling     
         self.pos = vec(0,0)
         self.povhasakey = 0
-        
+        self.load_images()
+        self.rect = self.image.get_rect()
+       
+        self.jumping = False
+        self.walking = False
+        self.current_frame = 0
+        self.last_update = 0
 
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
@@ -78,7 +105,36 @@ class Pov(pg.sprite.Sprite):
             self.speed = 450
         if not keys[pg.K_LSHIFT] or keys[pg.K_RSHIFT]:
             self.speed = 300
-
+    def load_images(self):
+        self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32),
+                                self.spritesheet.get_image(32, 0, 32, 32)]
+        for frame in self.standing_frames:
+            frame.set_colorkey(BLACK)
+        self.walk_frames_r = [self.spritesheet.get_image(678, 860, 120, 201),
+                              self.spritesheet.get_image(692, 1458, 120, 207)]
+        self.walk_frames_l = []
+        for frame in self.walk_frames_r:
+            frame.set_colorkey(BLACK)
+            self.walk_frames_l.append(pg.transform.flip(frame, True, False))
+        self.jump_frame = self.spritesheet.get_image(256, 0, 128, 128)
+        self.jump_frame.set_colorkey(BLACK)
+    def animate(self):
+        now = pg.time.get_ticks()
+        if not self.jumping and not self.walking:
+            if now - self.last_update > 500:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+                bottom = self.rect.bottom
+                self.image = self.standing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
+        if self.jumping:
+            bottom = self.rect.bottom
+            self.image = self.jump_frame
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
+    def update(self):
+        self.animate()
     # def speed_cooldown(self):
         
     #     # self.cooldownspeed.countdown(5) 
@@ -299,6 +355,8 @@ class Pov(pg.sprite.Sprite):
     
     #def collet_power_up()
         
+
+
 
 
 

@@ -30,6 +30,8 @@ Add comments(difficulty: medium)
 
 3 things I should add (very real)
 
+#MAKE THEM MOVE AT DIFFERNT SPEEDS
+
 randomness(difficulty:medium)
 more maps(difficulty:medium)
 
