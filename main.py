@@ -11,6 +11,10 @@ import sys
 from os import path
 from uttility import *
 
+#beta is 
+#Adding a boss fight
+#more levels
+
 '''
 personal ideas
         
@@ -262,14 +266,15 @@ class Game:
         self.draw_text(self.screen,tip_text, 24, WHITE, 24, 305)
         pg.display.flip()
         self.wait_for_key()
-  
-   #not defining sprites all I think
+    startquit = False 
+    #not defining sprites all I think
     def update(self):
         self.all_sprites.update()
         self.ready_to_pause()
         self.cooldown.ticking()
-
-    
+        if self.pov.health == 0:
+            g.show_gameover_screen
+            self.playing = False
     #drawing the grey grid on the bored
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -316,13 +321,13 @@ class Game:
     #                 self.player1.move(dy=1)
    #this starts up the game 
     def run(self,):
+        
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
             self.update()
             self.draw()
-
                 #need to run these things
             
 #this is mr cozort start screen

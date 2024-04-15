@@ -79,7 +79,7 @@ class Pov(pg.sprite.Sprite):
         self.walking = False
         self.current_frame = 0
         self.last_update = 0
-
+        
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -134,7 +134,12 @@ class Pov(pg.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.bottom = bottom
     def update(self):
-        self.animate()
+        self.animate()   
+        if self.health == 0:
+            self.playing = False
+            self.show_gameover_screen
+            
+
     # def speed_cooldown(self):
         
     #     # self.cooldownspeed.countdown(5) 
@@ -211,6 +216,7 @@ class Pov(pg.sprite.Sprite):
     
     #all the rules how the things collide
     def update(self):
+        
         self.get_keys()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
@@ -235,9 +241,7 @@ class Pov(pg.sprite.Sprite):
         if self.health >= 5:
             self.health = 5
         
-        if self.health == 0:
-            waiting = True
-            restarting = True
+            
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
         #     print("I got a coin")
