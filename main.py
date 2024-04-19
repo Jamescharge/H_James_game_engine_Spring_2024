@@ -63,7 +63,7 @@ Using sprint to give the feeling of more control
 
 
 LEVEL1 = "level1.txt"
-LEVEL2 = "level2.txt"
+
 tips = [
             "There are 69 very helpful and fun tips",
             "Do not hit the wall twice(I patched it silly)",
@@ -171,8 +171,7 @@ class Game:
         self.on_level = 1
         if self.on_level == 1 :
             currentlevel = LEVEL1 
-        if self.on_level == 2:
-            currentlevel = LEVEL2 
+      
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
@@ -182,6 +181,7 @@ class Game:
             for line in f:
                 print(line)
                 self.map_data.append(line)
+        
     def new(self):
     #These define the groups
         #I need to add to it (almost)everytime I add a feture that needs to be loaded in the game 
@@ -204,11 +204,11 @@ class Game:
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
-        
+        self.map = pg.Surface((len(self.map_data[0])*32,len(self.map_data[0])*32))
         for row, tiles in enumerate(self.map_data):
-            print(row)
+         
             for col, tile in enumerate(tiles):
-                print(col)
+              
                #this defines each and every map item in the #map area
                 if tile == '1':
                     # print("a wall at", row, col)
@@ -242,7 +242,7 @@ class Game:
                     LooksKeyWall(self, col, row)
                     KeyWall(self, col, row)
                 if tile == '3':
-                    print("shhhhhhhh", row, col)
+                    # print("shhhhhhhh", row, col)
                     MobWall(self, col, row)
     #making it so the game can close when requested
     
@@ -292,10 +292,15 @@ class Game:
         surface.blit(text_surface, text_rect)  
 
     def draw(self):
-            self.screen.fill(BGCOLOR)
+           
+            
             self.draw_grid()
-            self.all_sprites.draw(self.screen)
+            
+            self.screen.blit(self.map,self.pov.map_pos)
+            self.map.fill(BGCOLOR)
+            self.all_sprites.draw(self.map)
             #drwing coins, lives, and Speed
+            
             self.draw_text(self.screen, "Coin " + str(self.pov.moneyamount), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 31)
@@ -351,6 +356,7 @@ class Game:
                 #mouse button left click
                 if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
+
 
         
         #MY ATEMPT at pause screen
