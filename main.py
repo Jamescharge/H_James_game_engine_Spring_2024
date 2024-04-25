@@ -2,7 +2,6 @@
 #2/28 is when github has started always watching
 #imported in items of python located here
 import pygame as pg
-from tipslist import *
 from settings import *
 from sprites import *
 from random import *
@@ -12,9 +11,11 @@ from os import path
 from uttility import *
 
 #beta is 
-#Adding a boss fight
+#Camera
 #more levels
 
+#Final release
+#Flashlight for more of a challange
 '''
 personal ideas
         
@@ -61,9 +62,9 @@ Using sprint to give the feeling of more control
 '''
 
 
+health = 5
 
-LEVEL1 = "level1.txt"
-
+level_files = ["level1.txt", "level2.txt", "level3.txt"]
 tips = [
             "There are 69 very helpful and fun tips",
             "Do not hit the wall twice(I patched it silly)",
@@ -163,25 +164,39 @@ class Game:
     #         pg.display.flip()
  
    
+    def load_random_level(self):
+        # Select a random level from the available level files
+        level_files = ["level1.txt", "level2.txt", "level3.txt"]
+        random_level = choice(level_files)
+        game_folder = path.dirname(__file__)
+        # Reload the game with the selected level
+        self.map_data = []  # Clear existing map data
+        with open(path.join(game_folder, random_level), 'rt') as f:
+            for line in f:
+                self.map_data.append(line)
+    
+   
+        self.new()
 
     def load_data(self):
                 #the following code under game_flder until self.map_data was given to us from mr CoZart fully
         game_folder = path.dirname(__file__)
         self.map_data = []
-        self.on_level = 1
-        if self.on_level == 1 :
-            currentlevel = LEVEL1 
-      
+        
+        r = Random()
+        level_files = ["level1.txt", "level2.txt", "level3.txt"]
+       
+        LEVEL = r.choice(level_files)
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(game_folder, currentlevel), 'rt') as f:
+        with open(path.join(game_folder, LEVEL), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
-        
+       
     def new(self):
     #These define the groups
         #I need to add to it (almost)everytime I add a feture that needs to be loaded in the game 
@@ -204,14 +219,14 @@ class Game:
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
-        self.map = pg.Surface((len(self.map_data[0])*32,len(self.map_data[0])*32))
+        
         for row, tiles in enumerate(self.map_data):
-         
+            print(row)
             for col, tile in enumerate(tiles):
-              
+                print(col)
                #this defines each and every map item in the #map area
                 if tile == '1':
-                    # print("a wall at", row, col)
+                    print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
                     self.pov = Pov(self, col, row)
@@ -242,7 +257,7 @@ class Game:
                     LooksKeyWall(self, col, row)
                     KeyWall(self, col, row)
                 if tile == '3':
-                    # print("shhhhhhhh", row, col)
+                    print("shhhhhhhh", row, col)
                     MobWall(self, col, row)
     #making it so the game can close when requested
     
@@ -258,6 +273,7 @@ class Game:
         #might revamp if we move on
         r = Random() 
         selected_tip = r.choice(tips)
+      
         tip_text = (selected_tip )
         self.draw_text(self.screen,"THE SILLY OF GAMES ", 24, WHITE, 24, 35)
         self.draw_text(self.screen,"Made by James with C ", 24, WHITE, 24, 70)
@@ -273,8 +289,9 @@ class Game:
         self.ready_to_pause()
         self.cooldown.ticking()
         if self.pov.health == 0:
-            g.show_gameover_screen
-            self.playing = False
+            g.show_gameover_screen()
+            self.load_random_level()
+
     #drawing the grey grid on the bored
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -292,15 +309,10 @@ class Game:
         surface.blit(text_surface, text_rect)  
 
     def draw(self):
-           
-            
+            self.screen.fill(BGCOLOR)
             self.draw_grid()
-            
-            self.screen.blit(self.map,self.pov.map_pos)
-            self.map.fill(BGCOLOR)
-            self.all_sprites.draw(self.map)
+            self.all_sprites.draw(self.screen)
             #drwing coins, lives, and Speed
-            
             self.draw_text(self.screen, "Coin " + str(self.pov.moneyamount), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 31)
@@ -356,7 +368,6 @@ class Game:
                 #mouse button left click
                 if event.type == pg.MOUSEBUTTONDOWN:
                     waiting = False
-
 
         
         #MY ATEMPT at pause screen

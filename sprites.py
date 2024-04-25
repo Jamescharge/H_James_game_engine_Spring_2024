@@ -74,8 +74,7 @@ class Pov(pg.sprite.Sprite):
         self.povhasakey = 0
         self.load_images()
         self.rect = self.image.get_rect()
-        self.map_pos = (self.x-475,self.y-354)
-        self.mapx, self.mapy = self.map_pos
+       
         self.jumping = False
         self.walking = False
         self.current_frame = 0
@@ -237,10 +236,8 @@ class Pov(pg.sprite.Sprite):
         self.collide_with_group(self.game.keywall, False)
    
         self.collide_with_group(self.game.keys, True)
-        self.mapx += -self.vx *self.game.dt
-        self.mapy += -self.vy *self.game.dt
-        self.map_pos = (self.mapx,self.mapy)
-        
+      
+
         if self.health >= 5:
             self.health = 5
         
@@ -332,8 +329,6 @@ class Pov(pg.sprite.Sprite):
     def kill(self):
         self.x = self.game.Pcol*TILESIZE
         self.y = self.game.Prow*TILESIZE
-        self.map_pos = (self.x-475,self.y-354)
-        self.mapx, self.mapy = self.map_pos
         if self.invincible == False:
             self.health -= 1
         if self.invincible == True:
