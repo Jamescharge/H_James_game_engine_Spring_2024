@@ -171,6 +171,7 @@ class Game:
         game_folder = path.dirname(__file__)
         # Reload the game with the selected level
         self.map_data = []  # Clear existing map data
+
         with open(path.join(game_folder, random_level), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
@@ -219,7 +220,7 @@ class Game:
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
-        
+        self.map = pg.Surface((len(self.map_data[0])*32,len(self.map_data[0])*32))
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -291,7 +292,10 @@ class Game:
         if self.pov.health == 0:
             g.show_gameover_screen()
             self.load_random_level()
-
+        keys = pg.key.get_pressed()
+        if keys[pg.K_r]:
+            g.show_start_screen
+            self.load_random_level()
     #drawing the grey grid on the bored
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -309,9 +313,13 @@ class Game:
         surface.blit(text_surface, text_rect)  
 
     def draw(self):
+            
             self.screen.fill(BGCOLOR)
             self.draw_grid()
-            self.all_sprites.draw(self.screen)
+            self.screen.blit(self.map,self.pov.map_pos)
+            self.map.fill(BGCOLOR)
+            self.all_sprites.draw(self.map)
+            # self.all_sprites.draw(self.screen)
             #drwing coins, lives, and Speed
             self.draw_text(self.screen, "Coin " + str(self.pov.moneyamount), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)

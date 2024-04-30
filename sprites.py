@@ -79,7 +79,8 @@ class Pov(pg.sprite.Sprite):
         self.walking = False
         self.current_frame = 0
         self.last_update = 0
-        
+        self.map_pos = (self.x-475,self.y-354)
+        self.mapx, self.mapy = self.map_pos   
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -97,6 +98,8 @@ class Pov(pg.sprite.Sprite):
             self.vy = -self.speed  
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
+       
+
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
@@ -237,7 +240,9 @@ class Pov(pg.sprite.Sprite):
    
         self.collide_with_group(self.game.keys, True)
       
-
+        self.mapx += -self.vx *self.game.dt
+        self.mapy += -self.vy *self.game.dt
+        self.map_pos = (self.mapx,self.mapy)
         if self.health >= 5:
             self.health = 5
         
@@ -289,7 +294,7 @@ class Pov(pg.sprite.Sprite):
                 if self.keyamount == 1:
                     self.keyamount = 0
             elif isinstance(hit, NextLevelWall):
-                self.on_level =+ 1
+                self.health = 0
             elif isinstance(hit,sidetoside):
                 self.kill()
     # def update(self):
@@ -329,6 +334,8 @@ class Pov(pg.sprite.Sprite):
     def kill(self):
         self.x = self.game.Pcol*TILESIZE
         self.y = self.game.Prow*TILESIZE
+        self.map_pos = (self.x-475,self.y-354)
+        self.mapx, self.mapy = self.map_pos
         if self.invincible == False:
             self.health -= 1
         if self.invincible == True:
@@ -427,6 +434,20 @@ class LooksKeyWall(pg.sprite.Sprite):
         self.rect.y = y * TILESIZE
 #it is invisible so cool research
 class MobWall(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.nosee_wall
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # This makes transparancy
+        self.image = pg.Surface((TILESIZE, TILESIZE), pg.SRCALPHA)
+        # should invisible it 
+        self.image.fill((0, 0, 0, 0))
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+class NewLevelWall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.nosee_wall
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -665,4 +686,54 @@ class Mob2(pg.sprite.Sprite):
         # self.rect.center = self.hit_rect.center
         # if self.health <= 0:
         #     self.kill()
-    
+
+# class SnakeSegment(pg.sprite.Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_sprites, game.snake_segments
+#         pg.sprite.Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(GREEN)  # Adjust color as needed
+#         self.rect = self.image.get_rect()
+#         self.x = x
+#         self.y = y
+#         self.rect.x = x * TILESIZE
+#         self.rect.y = y * TILESIZE
+
+# class Snake:
+#     def __init__(self, game, x, y, length=5):
+#         self.game = game
+#         self.segments = []
+#         self.direction = vec(1, 0)  # Initial direction
+#         self.last_turn = 0  # Timer for last turn
+#         self.turn_delay = 2000  # Delay between turns in milliseconds
+
+#         # Create the head segment
+#         self.head = SnakeSegment(game, x, y)
+#         self.segments.append(self.head)
+
+#         # Create the body segments
+#         for i in range(1, length):
+#             segment = SnakeSegment(game, x - i, y)
+#             self.segments.append(segment)
+
+#     def update(self):
+#         now = pg.time.get_ticks()
+#         if now - self.last_turn > self.turn_delay:
+#             self.turn()
+#             self.last_turn = now
+
+#         self.move()
+
+#     def turn(self):
+#         # Change direction randomly
+#         self.direction = choice([vec(1, 0), vec(-1, 0), vec(0, 1), vec(0, -1)])
+
+#     def move(self):
+#         # Move each segment of the snake
+#         for i in range(len(self.segments) - 1, 0, -1):
+#             self.segments[i].rect.x = self.segments[i - 1].rect.x
+#             self.segments[i].rect.y = self.segments[i - 1].rect.y
+
+#         self.head.rect.x += self.direction.x * TILESIZE
+#         self.head.rect.y += self.direction.y * TILESIZE
