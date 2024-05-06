@@ -6,11 +6,24 @@ from settings import *
 from uttility import *
 from random import choice
 from os import path
-
+import os
 dir = path.dirname(__file__)
 img_dir = path.join(dir, 'images')
-
+#chat gpt wrote this
+def read_coin_count():
+    if os.path.exists("coin.txt"):
+        with open("coin.txt", "r") as file:
+            try:
+                coin_count = int(file.readline())
+                return coin_count
+            except ValueError:
+                return 0 
+def write_coin_count(coin_count):
+    with open("coin.txt", "w") as file:
+        file.write(str(coin_count))
 SPRITESHEET = "theBell.png"
+KEYPHOTO = 'key.png'
+
 class Spritesheet:
     # utility class for loading and parsing spritesheets
     def __init__(self, filename):
@@ -63,7 +76,8 @@ class Pov(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         #all atributes that the player has
-        self.moneyamount = 0
+        
+        self.moneyamount = read_coin_count()
         self.speed = 300
         self.health = 3
         self.revert_speed = False 
@@ -80,7 +94,10 @@ class Pov(pg.sprite.Sprite):
         self.current_frame = 0
         self.last_update = 0
         self.map_pos = (self.x-475,self.y-354)
-        self.mapx, self.mapy = self.map_pos   
+        # self.map_pos = (-self.x, -self.y)
+
+        self.mapx, self.mapy = self.map_pos 
+          
     # def move(self, dx=0, dy=0):
     #     if not self.collide_with_walls(dx, dy):
     #         self.x += dx
@@ -138,7 +155,7 @@ class Pov(pg.sprite.Sprite):
             self.rect.bottom = bottom
     def update(self):
         self.animate()   
-        if self.health == 0:
+        if self.health <= 0:
             self.playing = False
             self.show_gameover_screen
             
@@ -296,6 +313,8 @@ class Pov(pg.sprite.Sprite):
             elif isinstance(hit, NextLevelWall):
                 self.health = 0
             elif isinstance(hit,sidetoside):
+                self.kill()
+            elif isinstance(hit,updown):
                 self.kill()
     # def update(self):
     #     self.get_keys()
@@ -477,17 +496,18 @@ class NextLevelWall(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 class Key(pg.sprite.Sprite):
+    
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.keys
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(WHITE)
+        self.image = game.KEYPHOTO  # Use the loaded key image
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
 #will use at furture date
 # class ShootAbleWeapon (pg.sprite.Sprite):
 #     def __init__ (self, game,x,y):
@@ -531,6 +551,50 @@ class sidetoside(pg.sprite.Sprite):
                     self.pos.x = wall.rect.left - self.rect.width / 2
                 elif self.direction == -1:
                     self.pos.x = wall.rect.right + self.rect.width / 2
+                self.direction *= -1  # Change direction
+                break  # Stop checking for collisions after first collision
+class Coins(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+class updown(pg.sprite.Sprite):
+    def __init__(self, game, x, y, speed):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.pos = vec(x, y) * TILESIZE
+        self.rect.center = self.pos
+        self.speed = speed
+        self.direction = 1  # Start moving right
+
+    def update(self):
+        # It moves side to side
+        self.pos.y += self.speed * self.direction * self.game.dt
+        self.rect.centery = self.pos.y
+
+       
+        self.collide_with_walls()
+
+        #it starts colliding it stuff
+        
+    def collide_with_walls(self):
+        for wall in self.game.walls:
+            if pg.sprite.collide_rect(self, wall):
+                if self.direction == 1:
+                    self.pos.y = wall.rect.top - self.rect.width / 2
+                elif self.direction == -1:
+                    self.pos.y = wall.rect.bottom + self.rect.width / 2
                 self.direction *= -1  # Change direction
                 break  # Stop checking for collisions after first collision
 class Coins(pg.sprite.Sprite):

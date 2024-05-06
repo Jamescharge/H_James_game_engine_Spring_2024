@@ -9,7 +9,7 @@ from random import choice
 import sys
 from os import path
 from uttility import *
-
+import time
 #beta is 
 #Camera
 #more levels
@@ -64,7 +64,7 @@ Using sprint to give the feeling of more control
 
 health = 5
 
-level_files = ["level1.txt", "level2.txt", "level3.txt"]
+level_files = ["level1.txt", "level2.txt", "level3.txt","level4.txt"]
 tips = [
             "There are 69 very helpful and fun tips",
             "Do not hit the wall twice(I patched it silly)",
@@ -166,12 +166,12 @@ class Game:
    
     def load_random_level(self):
         # Select a random level from the available level files
-        level_files = ["level1.txt", "level2.txt", "level3.txt"]
+ #remember there is 2
         random_level = choice(level_files)
         game_folder = path.dirname(__file__)
         # Reload the game with the selected level
         self.map_data = []  # Clear existing map data
-
+   
         with open(path.join(game_folder, random_level), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
@@ -180,12 +180,12 @@ class Game:
         self.new()
 
     def load_data(self):
-                #the following code under game_flder until self.map_data was given to us from mr CoZart fully
+               
         game_folder = path.dirname(__file__)
         self.map_data = []
-        
+        self.KEYPHOTO = pg.image.load('key.png').convert_alpha()
         r = Random()
-        level_files = ["level1.txt", "level2.txt", "level3.txt"]
+      
        
         LEVEL = r.choice(level_files)
         '''
@@ -220,7 +220,7 @@ class Game:
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
-        self.map = pg.Surface((len(self.map_data[0])*32,len(self.map_data[0])*32))
+        self.map = pg.Surface((len(self.map_data[0])*100,len(self.map_data[0])*100))
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -250,7 +250,9 @@ class Game:
                 if tile == 'H':
                     HealUp(self, col, row)
                 if tile == 'S':
-                    sidetoside(self, col, row, speed=100)
+                    sidetoside(self, col, row, speed=150)
+                if tile == 'U':
+                    updown(self, col, row, speed=150)
                 if tile == 'k':
                     Key(self, col, row)
                 if tile == 'K':
@@ -267,9 +269,11 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
+        
  
    
     def show_start_screen(self):
+        
         self.screen.fill(BGCOLOR)
         #might revamp if we move on
         r = Random() 
@@ -283,6 +287,7 @@ class Game:
         self.draw_text(self.screen,tip_text, 24, WHITE, 24, 305)
         pg.display.flip()
         self.wait_for_key()
+        
     startquit = False 
     #not defining sprites all I think
     def update(self):
@@ -296,6 +301,7 @@ class Game:
         if keys[pg.K_r]:
             g.show_start_screen
             self.load_random_level()
+            time.sleep(0.4)
     #drawing the grey grid on the bored
     def draw_grid(self):
          for x in range(0, WIDTH, TILESIZE):
@@ -314,13 +320,20 @@ class Game:
 
     def draw(self):
             
-            self.screen.fill(BGCOLOR)
-            self.draw_grid()
+            self.screen.fill(BLUE)
+
             self.screen.blit(self.map,self.pov.map_pos)
+            
             self.map.fill(BGCOLOR)
+           
             self.all_sprites.draw(self.map)
             # self.all_sprites.draw(self.screen)
-            #drwing coins, lives, and Speed
+           
+           
+
+        
+            # self.draw_text(self.screen, f"Coins: {self.pov.moneyamount}", 24, WHITE, 10, 10)
+
             self.draw_text(self.screen, "Coin " + str(self.pov.moneyamount), 24, WHITE, 2, 17)           
             self.draw_text(self.screen, "Lives " + str(self.pov.health), 24, WHITE, 2, 3)
             self.draw_text(self.screen, "Speed " + str(self.pov.speed), 24, WHITE, 2, 31)
@@ -401,7 +414,9 @@ class Game:
         # if gameover == True:            
         #     for event in pg.event.get():
         #         if event.type == pg.MOUSEBUTTONDOWN:
-                    
+   
+   
+                      
 
 
 
