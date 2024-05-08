@@ -23,7 +23,7 @@ def write_coin_count(coin_count):
         file.write(str(coin_count))
 SPRITESHEET = "theBell.png"
 KEYPHOTO = 'key.png'
-
+DOORPHOTO = 'door.png'
 class Spritesheet:
     # utility class for loading and parsing spritesheets
     def __init__(self, filename):
@@ -428,8 +428,8 @@ class KeyWall(pg.sprite.Sprite):
         
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(PINK2)
+        # self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = game.DOORPHOTO  # Use the loaded key image
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -444,8 +444,8 @@ class LooksKeyWall(pg.sprite.Sprite):
         
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        self.image = game.DOORPHOTO  # Use the loaded key image
+     
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

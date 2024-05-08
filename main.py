@@ -184,6 +184,7 @@ class Game:
         game_folder = path.dirname(__file__)
         self.map_data = []
         self.KEYPHOTO = pg.image.load('key.png').convert_alpha()
+        self.DOORPHOTO = pg.image.load('door.png').convert_alpha()
         r = Random()
       
        
