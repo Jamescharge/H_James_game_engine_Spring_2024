@@ -185,16 +185,18 @@ class Game:
         self.map_data = []
         self.KEYPHOTO = pg.image.load('key.png').convert_alpha()
         self.DOORPHOTO = pg.image.load('door.png').convert_alpha()
+        self.PLAYERPHOTO = pg.image.load('player.png').convert_alpha()
         r = Random()
       
        
         LEVEL = r.choice(level_files)
+        CurrentLevelRN = LEVEL
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(game_folder, LEVEL), 'rt') as f:
+        with open(path.join(game_folder, CurrentLevelRN ), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
@@ -298,6 +300,7 @@ class Game:
         if self.pov.health == 0:
             g.show_gameover_screen()
             self.load_random_level()
+            # self.load_data()
         keys = pg.key.get_pressed()
         if keys[pg.K_r]:
             g.show_start_screen

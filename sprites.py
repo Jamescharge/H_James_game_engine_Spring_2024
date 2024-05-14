@@ -154,88 +154,6 @@ class Pov(pg.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.bottom = bottom
     def update(self):
-        self.animate()   
-        if self.health <= 0:
-            self.playing = False
-            self.show_gameover_screen
-            
-
-    # def speed_cooldown(self):
-        
-    #     # self.cooldownspeed.countdown(5) 
-    #     if self.speed > 351:                           
-    #         print("I was called/loved once")
-            
-    #         str(self.test_timer.countdown(5))
-    #         if str(self.test_timer.countdown(5)) == 1 :
-    #             print("and I was nieve to exspect this to work")
-    #             self.speed += -200
-    #             self.test_timer.event_reset()
-                
-    # def move(self, dx=0, dy=0):
-    #     if not self.collide_with_walls(dx, dy):
-    #         self.x += dx
-    #         self.y += dy
-
-    # def collide_with_walls(self, dx=0, dy=0):
-    #     for wall in self.game.walls:
-    #         if wall.x == self.x + dx and wall.y == self.y + dy:
-    #             return True
-    #     return False
-   
-   #put this here but defines the same thing and should work with out it technically
-    def collide_with_walls(self, dir):
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vx > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.vx < 0:
-                    self.x = hits[0].rect.right
-                self.vx = 0
-                self.rect.x = self.x
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vy > 0:
-                    self.y = hits[0].rect.top - self.rect.height
-                if self.vy < 0:
-                    self.y = hits[0].rect.bottom
-                self.vy = 0
-                self.rect.y = self.y          
-    # def kill_collide_with_walls(self, dir):   
-    #     if dir == 'x':
-    #         hits = pg.sprite.spritecollide(self, self.game.kill_wall, False)
-    #         if hits:
-    #             if self.vx > 0:
-    #                 self.x = hits[0].rect.left - self.rect.width
-    #             if self.vx < 0:
-    #                 self.x = hits[0].rect.right
-    #             self.vx = 0
-    #             self.rect.x = self.x
-    #     if dir == 'y':
-    #         hits = pg.sprite.spritecollide(self, self.game.kill_wall, False)
-    #         if hits:
-    #             if self.vy > 0:
-    #                 self.y = hits[0].rect.top - self.rect.height
-    #             if self.vy < 0:
-    #                 self.y = hits[0].rect.bottom
-    #             self.vy = 0
-    #             self.rect.y = self.y         
-                
-                
-    # def collide_with_group(self, group, kill):
-    #     hits = pg.sprite.spritecollide(self, group, kill)
-    #     if hits:
-    #         if str(hits[0].__class__.__name__) == Coins:
-    #             self.moneybag += 1
-    #             print("you got coined")
-    #         if str(hits[0].__class__.__name__) == PowerUp:
-    #             self.speed += 200
-    
-    
-    #all the rules how the things collide
-    def update(self):
         
         self.get_keys()
         self.x += self.vx * self.game.dt
@@ -521,6 +439,9 @@ class Key(pg.sprite.Sprite):
 #         self.y = y
 #         self.rect.x = x * self.pov
 #         self.rect.y = y * self.pov
+
+
+# DIRECT CHAT GPT
 class sidetoside(pg.sprite.Sprite):
     def __init__(self, game, x, y, speed):
         self.groups = game.all_sprites, game.mobs
@@ -565,6 +486,7 @@ class Coins(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+# MODIFITED CHAT GPT CODE
 class updown(pg.sprite.Sprite):
     def __init__(self, game, x, y, speed):
         self.groups = game.all_sprites, game.mobs
