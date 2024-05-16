@@ -154,6 +154,88 @@ class Pov(pg.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.bottom = bottom
     def update(self):
+        self.animate()   
+        if self.health <= 0:
+            self.playing = False
+            self.show_gameover_screen
+            
+
+    # def speed_cooldown(self):
+        
+    #     # self.cooldownspeed.countdown(5) 
+    #     if self.speed > 351:                           
+    #         print("I was called/loved once")
+            
+    #         str(self.test_timer.countdown(5))
+    #         if str(self.test_timer.countdown(5)) == 1 :
+    #             print("and I was nieve to exspect this to work")
+    #             self.speed += -200
+    #             self.test_timer.event_reset()
+                
+    # def move(self, dx=0, dy=0):
+    #     if not self.collide_with_walls(dx, dy):
+    #         self.x += dx
+    #         self.y += dy
+
+    # def collide_with_walls(self, dx=0, dy=0):
+    #     for wall in self.game.walls:
+    #         if wall.x == self.x + dx and wall.y == self.y + dy:
+    #             return True
+    #     return False
+   
+   #put this here but defines the same thing and should work with out it technically
+    def collide_with_walls(self, dir):
+        if dir == 'x':
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
+                self.rect.x = self.x
+        if dir == 'y':
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
+                self.rect.y = self.y          
+    # def kill_collide_with_walls(self, dir):   
+    #     if dir == 'x':
+    #         hits = pg.sprite.spritecollide(self, self.game.kill_wall, False)
+    #         if hits:
+    #             if self.vx > 0:
+    #                 self.x = hits[0].rect.left - self.rect.width
+    #             if self.vx < 0:
+    #                 self.x = hits[0].rect.right
+    #             self.vx = 0
+    #             self.rect.x = self.x
+    #     if dir == 'y':
+    #         hits = pg.sprite.spritecollide(self, self.game.kill_wall, False)
+    #         if hits:
+    #             if self.vy > 0:
+    #                 self.y = hits[0].rect.top - self.rect.height
+    #             if self.vy < 0:
+    #                 self.y = hits[0].rect.bottom
+    #             self.vy = 0
+    #             self.rect.y = self.y         
+                
+                
+    # def collide_with_group(self, group, kill):
+    #     hits = pg.sprite.spritecollide(self, group, kill)
+    #     if hits:
+    #         if str(hits[0].__class__.__name__) == Coins:
+    #             self.moneybag += 1
+    #             print("you got coined")
+    #         if str(hits[0].__class__.__name__) == PowerUp:
+    #             self.speed += 200
+    
+    
+    #all the rules how the things collide
+    def update(self):
         
         self.get_keys()
         self.x += self.vx * self.game.dt
@@ -233,6 +315,9 @@ class Pov(pg.sprite.Sprite):
             elif isinstance(hit,sidetoside):
                 self.kill()
             elif isinstance(hit,updown):
+                self.kill()
+                
+            elif isinstance(hit,BouncingMob):
                 self.kill()
     # def update(self):
     #     self.get_keys()
@@ -439,9 +524,6 @@ class Key(pg.sprite.Sprite):
 #         self.y = y
 #         self.rect.x = x * self.pov
 #         self.rect.y = y * self.pov
-
-
-# DIRECT CHAT GPT
 class sidetoside(pg.sprite.Sprite):
     def __init__(self, game, x, y, speed):
         self.groups = game.all_sprites, game.mobs
@@ -486,7 +568,6 @@ class Coins(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-# MODIFITED CHAT GPT CODE
 class updown(pg.sprite.Sprite):
     def __init__(self, game, x, y, speed):
         self.groups = game.all_sprites, game.mobs
@@ -558,6 +639,8 @@ class HealUp(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 # MOB code made by amazing computer science teacher Mr Cozort
+
+
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.mobs
@@ -672,54 +755,27 @@ class Mob2(pg.sprite.Sprite):
         # self.rect.center = self.hit_rect.center
         # if self.health <= 0:
         #     self.kill()
+import random
+class BouncingMob(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.pos = vec(x, y) * TILESIZE
+        self.rect.center = self.pos
+        self.vel = vec(random.randint(-5, 5), random.randint(-5, 5))
+        self.acc = vec(0, 0)
 
-# class SnakeSegment(pg.sprite.Sprite):
-#     def __init__(self, game, x, y):
-#         self.groups = game.all_sprites, game.snake_segments
-#         pg.sprite.Sprite.__init__(self, self.groups)
-#         self.game = game
-#         self.image = pg.Surface((TILESIZE, TILESIZE))
-#         self.image.fill(GREEN)  # Adjust color as needed
-#         self.rect = self.image.get_rect()
-#         self.x = x
-#         self.y = y
-#         self.rect.x = x * TILESIZE
-#         self.rect.y = y * TILESIZE
+    def update(self):
+        self.acc = vec(random.randint(-2, 2), random.randint(-2, 2))
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+        self.rect.center = self.pos
+        if self.rect.left <= 0 or self.rect.right >= WIDTH:
+            self.vel.x *= -1
+        if self.rect.top <= 0 or self.rect.bottom >= HEIGHT:
+            self.vel.y *= -1
 
-# class Snake:
-#     def __init__(self, game, x, y, length=5):
-#         self.game = game
-#         self.segments = []
-#         self.direction = vec(1, 0)  # Initial direction
-#         self.last_turn = 0  # Timer for last turn
-#         self.turn_delay = 2000  # Delay between turns in milliseconds
-
-#         # Create the head segment
-#         self.head = SnakeSegment(game, x, y)
-#         self.segments.append(self.head)
-
-#         # Create the body segments
-#         for i in range(1, length):
-#             segment = SnakeSegment(game, x - i, y)
-#             self.segments.append(segment)
-
-#     def update(self):
-#         now = pg.time.get_ticks()
-#         if now - self.last_turn > self.turn_delay:
-#             self.turn()
-#             self.last_turn = now
-
-#         self.move()
-
-#     def turn(self):
-#         # Change direction randomly
-#         self.direction = choice([vec(1, 0), vec(-1, 0), vec(0, 1), vec(0, -1)])
-
-#     def move(self):
-#         # Move each segment of the snake
-#         for i in range(len(self.segments) - 1, 0, -1):
-#             self.segments[i].rect.x = self.segments[i - 1].rect.x
-#             self.segments[i].rect.y = self.segments[i - 1].rect.y
-
-#         self.head.rect.x += self.direction.x * TILESIZE
-#         self.head.rect.y += self.direction.y * TILESIZE

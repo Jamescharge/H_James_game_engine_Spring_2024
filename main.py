@@ -64,7 +64,7 @@ Using sprint to give the feeling of more control
 
 health = 5
 
-level_files = ["level1.txt", "level2.txt", "level3.txt","level4.txt"]
+level_files = ["level1.txt", "level2.txt", "level3.txt","level4.txt",'level5.txt','level6.txt']
 tips = [
             "There are 69 very helpful and fun tips",
             "Do not hit the wall twice(I patched it silly)",
@@ -185,18 +185,16 @@ class Game:
         self.map_data = []
         self.KEYPHOTO = pg.image.load('key.png').convert_alpha()
         self.DOORPHOTO = pg.image.load('door.png').convert_alpha()
-        self.PLAYERPHOTO = pg.image.load('player.png').convert_alpha()
         r = Random()
       
        
         LEVEL = r.choice(level_files)
-        CurrentLevelRN = LEVEL
         '''
         The with statement is a context manager in Python. 
         It is used to ensure that a resource is properly closed or released 
         after it is used. This can help to prevent errors and leaks.
         '''
-        with open(path.join(game_folder, CurrentLevelRN ), 'rt') as f:
+        with open(path.join(game_folder, LEVEL), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
@@ -265,6 +263,8 @@ class Game:
                 if tile == '3':
                     print("shhhhhhhh", row, col)
                     MobWall(self, col, row)
+                if tile == '5':
+                    BouncingMob(self, col, row)
     #making it so the game can close when requested
     
 
@@ -300,7 +300,6 @@ class Game:
         if self.pov.health == 0:
             g.show_gameover_screen()
             self.load_random_level()
-            # self.load_data()
         keys = pg.key.get_pressed()
         if keys[pg.K_r]:
             g.show_start_screen
